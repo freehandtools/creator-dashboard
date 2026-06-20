@@ -50,9 +50,10 @@ export default function AIInsightsPage() {
   const sideIconColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(10,10,20,0.35)'
 
   return (
-    <div style={{ minHeight: '100vh', background: bg, transition: 'background 0.3s', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '100vh', background: bg, transition: 'background 0.3s', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+
       {/* NAVBAR */}
-      <div style={{ padding: '10px 12px 0' }}>
+      <div style={{ padding: '10px 12px 0', flexShrink: 0, background: bg, zIndex: 20 }}>
         <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 18px', borderRadius: 12, border: `0.5px solid ${borderStrong}`, backdropFilter: 'blur(16px)', background: navBg, transition: 'all 0.3s' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
             <svg width="15" height="15" viewBox="0 0 500 420" fill={textPrimary}>
@@ -73,12 +74,12 @@ export default function AIInsightsPage() {
       </div>
 
       {/* APP SHELL */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '10px 12px 12px' }}>
-        <div style={{ flex: 1, borderRadius: 14, overflow: 'hidden', background: bg, border: `0.5px solid ${border}`, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '10px 12px 12px', minHeight: 0 }}>
+        <div style={{ flex: 1, borderRadius: 14, border: `0.5px solid ${border}`, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
 
           {/* TOPBAR */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', borderBottom: `0.5px solid ${topbarBorder}`, flexShrink: 0 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: textPrimary }}>AI Insights</div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', borderBottom: `0.5px solid ${topbarBorder}`, flexShrink: 0, background: bg, borderRadius: '14px 14px 0 0' }}>
+            <div style={{ fontSize: 18, fontWeight: 900, color: textPrimary }}>AI Insights</div>
             <button
               onClick={generate}
               disabled={loading}
@@ -90,14 +91,15 @@ export default function AIInsightsPage() {
           </div>
 
           {/* BODY */}
-          <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+          <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+
             {/* SIDEBAR */}
             <div style={{ width: 60, borderRight: `0.5px solid ${sidebarBorder}`, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '14px 0', gap: 6, flexShrink: 0 }}>
               {[
-                { icon: 'ti-layout-dashboard', href: '/dashboard' },
-                { icon: 'ti-photo', href: '/dashboard/content' },
-                { icon: 'ti-chart-bar', href: '/dashboard/stats' },
-                { icon: 'ti-users', href: '/dashboard/audience' },
+                { icon: 'ti-layout-dashboard' },
+                { icon: 'ti-photo' },
+                { icon: 'ti-chart-bar' },
+                { icon: 'ti-users' },
                 { icon: 'ti-bulb', active: true },
               ].map((item, i) => (
                 <div key={i} style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: item.active ? '#fff' : sideIconColor, background: item.active ? 'linear-gradient(135deg,#FF7A00,#FF0069,#7638FA)' : 'transparent', cursor: 'pointer' }}>
@@ -112,7 +114,6 @@ export default function AIInsightsPage() {
             {/* MAIN SCROLL */}
             <div style={{ flex: 1, overflowY: 'auto', padding: 18 }}>
 
-              {/* Loading */}
               {loading && (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 300, gap: 14 }}>
                   <div style={{ width: 36, height: 36, border: `2.5px solid ${border}`, borderTopColor: '#FF0069', borderRadius: '50%', animation: 'spin 0.9s linear infinite' }}></div>
@@ -121,21 +122,17 @@ export default function AIInsightsPage() {
                 </div>
               )}
 
-              {/* Error */}
               {!loading && error && (
                 <div style={{ background: 'rgba(248,113,113,0.1)', border: '0.5px solid rgba(248,113,113,0.3)', borderRadius: 12, padding: 16, color: '#f87171', fontSize: 13 }}>
                   ⚠️ {error}
                 </div>
               )}
 
-              {/* Data */}
               {!loading && data && (
                 <>
-                  {/* 3 kolom utama */}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 10 }}>
-                    {/* Kekuatan */}
                     <div style={{ background: cardBg, border: `0.5px solid ${border}`, borderRadius: 12, padding: 14 }}>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: textPrimary, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <div style={{ fontSize: 18, fontWeight: 900, color: textPrimary, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
                         <i className="ti ti-trending-up" style={{ color: '#4ade80' }}></i> 3 Kekuatan Konten
                       </div>
                       <div style={{ fontSize: 10, color: textSecondary, marginBottom: 8 }}>Yang sudah berjalan baik, lanjutkan</div>
@@ -147,9 +144,8 @@ export default function AIInsightsPage() {
                       ))}
                     </div>
 
-                    {/* Blind Spot */}
                     <div style={{ background: cardBg, border: `0.5px solid ${border}`, borderRadius: 12, padding: 14 }}>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: textPrimary, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <div style={{ fontSize: 18, fontWeight: 900, color: textPrimary, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
                         <i className="ti ti-alert-triangle" style={{ color: '#fbbf24' }}></i> 3 Blind Spot
                       </div>
                       <div style={{ fontSize: 10, color: textSecondary, marginBottom: 8 }}>Belum disadari, perlu diperbaiki</div>
@@ -161,9 +157,8 @@ export default function AIInsightsPage() {
                       ))}
                     </div>
 
-                    {/* Peluang */}
                     <div style={{ background: cardBg, border: `0.5px solid ${border}`, borderRadius: 12, padding: 14 }}>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: textPrimary, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <div style={{ fontSize: 18, fontWeight: 900, color: textPrimary, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
                         <i className="ti ti-rocket" style={{ color: '#c084fc' }}></i> 3 Peluang
                       </div>
                       <div style={{ fontSize: 10, color: textSecondary, marginBottom: 8 }}>Belum dimanfaatkan, potensi besar</div>
@@ -176,10 +171,9 @@ export default function AIInsightsPage() {
                     </div>
                   </div>
 
-                  {/* Ide Konten */}
                   <div style={{ background: cardBg, border: `0.5px solid ${border}`, borderRadius: 12, padding: 14 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: textPrimary, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
-                      <i className="ti ti-calendar"></i> 10 Ide Konten Minggu Ini
+                    <div style={{ fontSize: 18, fontWeight: 900, color: textPrimary, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <i className="ti ti-calendar"></i> 10 Ide Konten Pekan Ini
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
                       {data.ide_konten.map((ide, i) => (
