@@ -102,6 +102,7 @@ export default function DashboardPage() {
     function draw(now: number) {
       const p = Math.min((now - start) / duration, 1)
       const e = 1 - Math.pow(1 - p, 3)
+      if (!linePoly || !areaPoly) return
       linePoly.setAttribute('points', linePts.map(([x, y]) => `${x},${(H + (y - H) * e).toFixed(2)}`).join(' '))
       areaPoly.setAttribute('points', areaFinal.map(([x, y], i) =>
         i >= linePts.length ? `${x},${y}` : `${x},${(H + (y - H) * e).toFixed(2)}`
