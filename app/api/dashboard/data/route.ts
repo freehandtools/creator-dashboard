@@ -1,0 +1,41 @@
+import { NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const period = parseInt(searchParams.get('period') ?? '30', 10)
+  const since = new Date(Date.now() - period * 24 * 60 * 60 * 1000).toISOString()
+
+  const { data: account } = await supabaseAdmin
+    .from('instagram_accounts')
+    .select('username, name, followers_count, media_count, profile_picture_url, updated_at')
+    .eq('user_id', 'local-dev-user')
+    .single()
+
+  const { data: media } = await supabaseAdmin
+    .from('instagram_media')
+    .select('media_id, caption, media_type, media_url, thumbnail_url, permalink, timestamp, like_count, comments_count')
+    .gte('timestamp', since)
+    .order('timestamp', { ascending: false })
+    .limit(50)
+
+  if (!media || media.length === 0) {
+    return NextResponse.json({ account: account ?? null, media: [] })
+  }
+
+  const mediaIds = media.map(m => m.media_id)
+
+  const { data: insights } = await supabaseAdmin
+    .from('instagram_media_insights')
+    .select('media_id, reach, saved, shares, engagement, score')
+    .in('media_id', mediaIds)
+
+  const insightMap = Object.fromEntries((insights ?? []).map(i => [i.media_id, i]))
+
+  const merged = media.map(m => ({
+    ...m,
+    instagram_media_insights: insightMap[m.media_id] ?? null
+  }))
+
+  return NextResponse.json({ account: account ?? null, media: merged })
+}
