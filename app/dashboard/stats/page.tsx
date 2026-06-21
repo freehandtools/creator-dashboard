@@ -52,12 +52,14 @@ function animateChart(
   duration = 1400
 ) {
   if (!lineEl || !areaEl) return
+  const line = lineEl
+  const area = areaEl
   const start = performance.now()
   function draw(now: number) {
     const p = Math.min((now - start) / duration, 1)
     const e = 1 - Math.pow(1 - p, 3)
-    lineEl.setAttribute('points', linePts.map(([x, y]) => `${x},${(H + (y - H) * e).toFixed(2)}`).join(' '))
-    areaEl.setAttribute('points', areaFinal.map(([x, y], i) =>
+    line.setAttribute('points', linePts.map(([x, y]) => `${x},${(H + (y - H) * e).toFixed(2)}`).join(' '))
+    area.setAttribute('points', areaFinal.map(([x, y], i) =>
       i >= linePts.length ? `${x},${y}` : `${x},${(H + (y - H) * e).toFixed(2)}`
     ).join(' '))
     if (p < 1) requestAnimationFrame(draw)
