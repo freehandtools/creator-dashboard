@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback, useRef } from 'react'
+import Link from 'next/link'
 
 type Period = 7 | 30 | 90
 
@@ -185,7 +186,7 @@ export default function DashboardPage() {
       padding: 12px 18px; flex-shrink: 0;
       border-bottom: 0.5px solid ${isDark ? 'rgba(255,255,255,0.07)' : 'rgba(10,10,20,0.08)'};
     }
-    .topbar-title { font-size: 15px; font-weight: 600; }
+    .topbar-title { font-size: 18px; font-weight: 900; }
     .topbar-right { display: flex; align-items: center; gap: 8px; }
 
     .period-btn {
@@ -320,6 +321,27 @@ export default function DashboardPage() {
 
       <div className="dash-root">
 
+        {/* NAVBAR */}
+        <div style={{ padding: '10px 12px 0', flexShrink: 0 }}>
+          <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 18px', borderRadius: 12, border: `0.5px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.18)'}`, backdropFilter: 'blur(16px)', background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.6)', transition: 'all 0.3s' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+              <svg width="15" height="15" viewBox="0 0 500 420" fill={isDark ? '#fff' : '#0a0a14'}>
+                <path d="M209.73,104.87c0,11.58-9.39,20.97-20.97,20.97h-62.92v62.92c0,11.58-9.39,20.97-20.97,20.97-11.58,0-20.97-9.39-20.97-20.97v-62.92H20.97C9.39,125.84,0,116.45,0,104.87c0-11.58,9.39-20.97,20.97-20.97h62.92V20.97C83.89,9.39,93.28,0,104.86,0c11.58,0,20.97,9.39,20.97,20.97v62.93h62.92c11.58,0,20.97,9.39,20.97,20.97Z"/>
+                <path d="M440.43,356.53v10.5c0,5.79-4.69,10.48-10.48,10.48-5.79,0-10.48-4.69-10.48-10.48-0-5.79-4.7-10.49-10.49-10.49-5.79,0-10.49,4.7-10.49,10.49v10.49c0,23.17-18.78,41.94-41.94,41.94-23.17,0-41.94-18.78-41.94-41.94v-10.49c0-5.79-4.69-10.49-10.49-10.49-5.79,0-10.49,4.69-10.49,10.49v10.49c0,23.17-18.78,41.94-41.94,41.94-23.17,0-41.94-18.78-41.94-41.94v-31.46c0-5.79-4.69-10.49-10.49-10.49-5.79,0-10.49,4.69-10.49,10.49v41.94c0,28.96-23.48,52.43-52.43,52.43-28.96,0-52.43-23.48-52.43-52.43v-136.32c0-11.58,9.39-20.97,20.97-20.97,11.58,0,20.97,9.39,20.97,20.97v136.32c0,5.79,4.69,10.48,10.48,10.48,5.79,0,10.48-4.69,10.48-10.48v-52.43c0-23.17,18.78-41.94,41.94-41.94,23.17,0,41.94,18.78,41.94,41.94v31.46c0,5.79,4.69,10.49,10.49,10.49,5.79,0,10.49-4.69,10.49-10.49v-10.49c0-23.17,18.78-41.95,41.95-41.95,23.17,0,41.95,18.78,41.95,41.95v10.49c0,5.79,4.69,10.49,10.49,10.49,5.79,0,10.49-4.69,10.49-10.49v-10.49c0-23.17,18.78-41.94,41.94-41.94,23.17,0,41.94,18.78,41.94,41.94Z"/>
+              </svg>
+              <span style={{ fontSize: 12, fontWeight: 500, color: isDark ? '#fff' : '#0a0a14' }}>freehandtools</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, height: 32 }}>
+              <button style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, boxSizing: 'border-box', background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(10,10,20,0.03)', border: `0.5px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.18)'}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: isDark ? '#fff' : '#0a0a14', cursor: 'pointer' }}>
+                <i className="ti ti-message" style={{ fontSize: 13 }} /> Hubungi Kami
+              </button>
+              <button onClick={() => setTheme(isDark ? 'light' : 'dark')} style={{ width: 32, height: 32, boxSizing: 'border-box', borderRadius: 8, border: `0.5px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.18)'}`, background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: isDark ? '#fff' : '#0a0a14', fontSize: 16 }}>
+                <i className={isDark ? 'ti ti-moon' : 'ti ti-sun'} />
+              </button>
+            </div>
+          </nav>
+        </div>
+
         {/* TOPBAR */}
         <div className="topbar">
           <div className="topbar-title">Overview</div>
@@ -339,9 +361,6 @@ export default function DashboardPage() {
               <i className="ti ti-refresh" style={{ fontSize: 13 }} />
               {refreshing ? 'Memperbarui...' : 'Refresh'}
             </button>
-            <button className="theme-toggle" onClick={() => setTheme(isDark ? 'light' : 'dark')} title="Toggle theme">
-              <i className={`ti ${isDark ? 'ti-moon' : 'ti-sun'}`} />
-            </button>
             <div className="avatar-wrap">
               {account?.profile_picture_url
                 ? <img src={account.profile_picture_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
@@ -356,14 +375,26 @@ export default function DashboardPage() {
 
           {/* SIDEBAR */}
           <div className="sidebar">
-            <div className="s-icon active" style={{ background: 'linear-gradient(135deg,#FF7A00,#FF0069,#7638FA)' }}>
-              <i className="ti ti-layout-dashboard" />
-            </div>
-            <div className="s-icon"><i className="ti ti-photo" /></div>
-            <div className="s-icon"><i className="ti ti-chart-bar" /></div>
-            <div className="s-icon"><i className="ti ti-users" /></div>
-            <div className="s-icon"><i className="ti ti-bulb" /></div>
-            <div className="s-icon" style={{ marginTop: 'auto' }}><i className="ti ti-settings" /></div>
+            <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+              <div className="s-icon active" style={{ background: 'linear-gradient(135deg,#FF7A00,#FF0069,#7638FA)' }}>
+                <i className="ti ti-layout-dashboard" />
+              </div>
+            </Link>
+            <Link href="/dashboard/content" style={{ textDecoration: 'none' }}>
+              <div className="s-icon"><i className="ti ti-photo" /></div>
+            </Link>
+            <Link href="/dashboard/stats" style={{ textDecoration: 'none' }}>
+              <div className="s-icon"><i className="ti ti-chart-bar" /></div>
+            </Link>
+            <Link href="/dashboard/audience" style={{ textDecoration: 'none' }}>
+              <div className="s-icon"><i className="ti ti-users" /></div>
+            </Link>
+            <Link href="/dashboard/ai" style={{ textDecoration: 'none' }}>
+              <div className="s-icon"><i className="ti ti-bulb" /></div>
+            </Link>
+            <Link href="/dashboard/settings" style={{ textDecoration: 'none', marginTop: 'auto' }}>
+              <div className="s-icon"><i className="ti ti-settings" /></div>
+            </Link>
           </div>
 
           {/* MAIN */}
