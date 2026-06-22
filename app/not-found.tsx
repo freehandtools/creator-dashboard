@@ -28,38 +28,39 @@ export default function NotFound() {
     const btnGroup = btnGroupRef.current
     if (!wrap || !nebula1 || !nebula2 || !btnGroup) return
 
+    const w = wrap
+    const n1 = nebula1
+    const n2 = nebula2
+    const bg = btnGroup
+
     const MAX_DIST = 350
 
     function onMouseMove(e: MouseEvent) {
-      const wr = wrap.getBoundingClientRect()
-      const br = btnGroup.getBoundingClientRect()
+      const wr = w.getBoundingClientRect()
+      const br = bg.getBoundingClientRect()
       const btnCx = br.left - wr.left + br.width / 2
       const btnCy = br.top - wr.top + br.height / 2
-      const mx = e.clientX - wr.left
-      const my = e.clientY - wr.top
-
-      const dist = Math.hypot(mx - btnCx, my - btnCy)
-      let t = Math.max(0, 1 - dist / MAX_DIST)
-
-      const maxOpacity1 = theme === 'dark' ? 0.9 : 0.22
-      const maxOpacity2 = theme === 'dark' ? 0.7 : 0.18
-      nebula1.style.opacity = (t * maxOpacity1).toFixed(2)
-      nebula2.style.opacity = (t * maxOpacity2).toFixed(2)
+      const dist = Math.hypot(e.clientX - wr.left - btnCx, e.clientY - wr.top - btnCy)
+      const t = Math.max(0, 1 - dist / MAX_DIST)
+      const max1 = theme === 'dark' ? 0.9 : 0.22
+      const max2 = theme === 'dark' ? 0.7 : 0.18
+      n1.style.opacity = (t * max1).toFixed(2)
+      n2.style.opacity = (t * max2).toFixed(2)
       const scale = 0.85 + t * 0.3
-      nebula1.style.transform = `translateX(-50%) scale(${scale})`
-      nebula2.style.transform = `translateX(-50%) scale(${scale * 1.05})`
+      n1.style.transform = `translateX(-50%) scale(${scale})`
+      n2.style.transform = `translateX(-50%) scale(${scale * 1.05})`
     }
 
     function onMouseLeave() {
-      nebula1.style.opacity = '0'
-      nebula2.style.opacity = '0'
+      n1.style.opacity = '0'
+      n2.style.opacity = '0'
     }
 
-    wrap.addEventListener('mousemove', onMouseMove)
-    wrap.addEventListener('mouseleave', onMouseLeave)
+    w.addEventListener('mousemove', onMouseMove)
+    w.addEventListener('mouseleave', onMouseLeave)
     return () => {
-      wrap.removeEventListener('mousemove', onMouseMove)
-      wrap.removeEventListener('mouseleave', onMouseLeave)
+      w.removeEventListener('mousemove', onMouseMove)
+      w.removeEventListener('mouseleave', onMouseLeave)
     }
   }, [theme])
 
