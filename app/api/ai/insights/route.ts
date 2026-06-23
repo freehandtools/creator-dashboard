@@ -114,7 +114,7 @@ Gunakan Bahasa Indonesia. Berdasarkan data nyata di atas, bukan contoh generik. 
       const lastBrace = safeJson.lastIndexOf('}')
       safeJson = lastBrace > -1 ? safeJson.slice(0, lastBrace + 1) : safeJson
     }
-    const parsed = JSON.parse(clean)
+    const parsed = JSON.parse(safeJson)
 
     return NextResponse.json({ success: true, data: parsed, username: account.username })
   } catch (err: unknown) {

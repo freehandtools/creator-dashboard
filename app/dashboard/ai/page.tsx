@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 interface InsightItem {
   judul: string
@@ -50,6 +51,8 @@ export default function AIInsightsPage() {
   const sideIconColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(10,10,20,0.35)'
 
   return (
+    <>
+    <title>AI Insights — Creator Performance Intelligence Dashboard</title>
     <div style={{ height: '100vh', background: bg, transition: 'background 0.3s', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
       {/* NAVBAR */}
@@ -63,9 +66,9 @@ export default function AIInsightsPage() {
             <span style={{ fontSize: 12, fontWeight: 500, color: textPrimary }}>freehandtools</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, height: 32 }}>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, boxSizing: 'border-box', background: cardBg, border: `0.5px solid ${borderStrong}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, cursor: 'pointer' }}>
+            <a href="mailto:freehandtools@gmail.com?subject=Masalah%20AI%20Insights%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20AI%20Insights%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, boxSizing: 'border-box', background: cardBg, border: `0.5px solid ${borderStrong}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, textDecoration: 'none', cursor: 'pointer' }}>
               <i className="ti ti-message" style={{ fontSize: 13 }}></i> Hubungi Kami
-            </button>
+            </a>
             <button onClick={() => setTheme(isDark ? 'light' : 'dark')} style={{ width: 32, height: 32, boxSizing: 'border-box', borderRadius: 8, border: `0.5px solid ${borderStrong}`, background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
               <i className={isDark ? 'ti ti-moon' : 'ti ti-sun'}></i>
             </button>
@@ -95,20 +98,36 @@ export default function AIInsightsPage() {
 
             {/* SIDEBAR */}
             <div style={{ width: 60, borderRight: `0.5px solid ${sidebarBorder}`, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '14px 0', gap: 6, flexShrink: 0 }}>
-              {[
-                { icon: 'ti-layout-dashboard' },
-                { icon: 'ti-photo' },
-                { icon: 'ti-chart-bar' },
-                { icon: 'ti-users' },
-                { icon: 'ti-bulb', active: true },
-              ].map((item, i) => (
-                <div key={i} style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: item.active ? '#fff' : sideIconColor, background: item.active ? 'linear-gradient(135deg,#FF7A00,#FF0069,#7638FA)' : 'transparent', cursor: 'pointer' }}>
-                  <i className={`ti ${item.icon}`}></i>
+              <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
+                  <i className="ti ti-layout-dashboard" />
                 </div>
-              ))}
-              <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sideIconColor, marginTop: 'auto', cursor: 'pointer' }}>
-                <i className="ti ti-settings"></i>
-              </div>
+              </Link>
+              <Link href="/dashboard/content" style={{ textDecoration: 'none' }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
+                  <i className="ti ti-photo" />
+                </div>
+              </Link>
+              <Link href="/dashboard/stats" style={{ textDecoration: 'none' }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
+                  <i className="ti ti-chart-bar" />
+                </div>
+              </Link>
+              <Link href="/dashboard/audience" style={{ textDecoration: 'none' }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
+                  <i className="ti ti-users" />
+                </div>
+              </Link>
+              <Link href="/dashboard/ai" style={{ textDecoration: 'none' }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: '#fff', background: 'linear-gradient(135deg,#FF7A00,#FF0069,#7638FA)' }}>
+                  <i className="ti ti-bulb" />
+                </div>
+              </Link>
+              <Link href="/dashboard/settings" style={{ textDecoration: 'none', marginTop: 'auto' }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
+                  <i className="ti ti-settings" />
+                </div>
+              </Link>
             </div>
 
             {/* MAIN SCROLL */}
@@ -190,5 +209,6 @@ export default function AIInsightsPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

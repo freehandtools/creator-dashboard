@@ -78,6 +78,8 @@ export default function NotFound() {
   const nebulaMix = isDark ? 'normal' : 'multiply'
 
   return (
+    <>
+    <title>Halaman Tidak Ditemukan — Creator Performance Intelligence Dashboard</title>
     <div ref={wrapRef} style={{ minHeight: '100vh', background: bg, display: 'flex', flexDirection: 'column', transition: 'background 0.3s', fontFamily: 'system-ui,sans-serif', position: 'relative', overflow: 'hidden' }}>
       <style>{`
         @keyframes igShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
@@ -130,9 +132,9 @@ export default function NotFound() {
             <span style={{ fontSize: 12, fontWeight: 500, color: textPrimary }}>freehandtools</span>
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, background: cardBg, border: `0.5px solid ${navBorder}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, cursor: 'pointer' }}>
+            <a href="mailto:freehandtools@gmail.com?subject=Halaman%20Tidak%20Ditemukan%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Halaman%20yang%20saya%20buka%20saat%20ini%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20masalah%20ini.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, background: cardBg, border: `0.5px solid ${navBorder}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, textDecoration: 'none', cursor: 'pointer' }}>
               <i className="ti ti-message" style={{ fontSize: 13 }} />Hubungi Kami
-            </button>
+            </a>
             <button onClick={toggleTheme} style={{ width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`, background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
               <i className={`ti ${isDark ? 'ti-moon' : 'ti-sun'}`} />
             </button>
@@ -179,6 +181,7 @@ export default function NotFound() {
         </div>
       </div>
     </div>
+    </>
   )
 }
 

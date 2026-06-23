@@ -91,6 +91,7 @@ export default function AuthPage() {
 
   return (
     <>
+      <title>Hubungkan Instagram — Creator Performance Intelligence Dashboard</title>
       <style>{`
         @keyframes starRotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes twinkle { 0%,100%{opacity:0.25} 50%{opacity:1} }
@@ -127,9 +128,9 @@ export default function AuthPage() {
               <span style={{ fontSize: 12, fontWeight: 500, color: textPrimary, transition: 'color 0.3s' }}>freehandtools</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, height: 32 }}>
-              <button style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, boxSizing: 'border-box', background: cardBg, border: `0.5px solid ${borderStrong}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, cursor: 'pointer', transition: 'all 0.3s' }}>
+              <a href="mailto:freehandtools@gmail.com?subject=Masalah%20Auth%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Auth%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, boxSizing: 'border-box', background: cardBg, border: `0.5px solid ${borderStrong}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, cursor: 'pointer', textDecoration: 'none', transition: 'all 0.3s' }}>
                 <i className="ti ti-message" style={{ fontSize: 13 }} /> Hubungi Kami
-              </button>
+              </a>
               <button onClick={() => setTheme(isDark ? 'light' : 'dark')} style={{ width: 32, height: 32, boxSizing: 'border-box', borderRadius: 8, border: `0.5px solid ${borderStrong}`, background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16, transition: 'all 0.2s' }}>
                 <i className={isDark ? 'ti ti-moon' : 'ti ti-sun'} />
               </button>

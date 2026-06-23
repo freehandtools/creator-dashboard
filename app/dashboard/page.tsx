@@ -316,6 +316,7 @@ export default function DashboardPage() {
 
   return (
     <>
+      <title>Overview — Creator Performance Intelligence Dashboard</title>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
       <style>{css}</style>
 
@@ -332,9 +333,9 @@ export default function DashboardPage() {
               <span style={{ fontSize: 12, fontWeight: 500, color: isDark ? '#fff' : '#0a0a14' }}>freehandtools</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, height: 32 }}>
-              <button style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, boxSizing: 'border-box', background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(10,10,20,0.03)', border: `0.5px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.18)'}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: isDark ? '#fff' : '#0a0a14', cursor: 'pointer' }}>
+              <a href="mailto:freehandtools@gmail.com?subject=Masalah%20Overview%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Overview%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, boxSizing: 'border-box', background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(10,10,20,0.03)', border: `0.5px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.18)'}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: isDark ? '#fff' : '#0a0a14', textDecoration: 'none', cursor: 'pointer' }}>
                 <i className="ti ti-message" style={{ fontSize: 13 }} /> Hubungi Kami
-              </button>
+              </a>
               <button onClick={() => setTheme(isDark ? 'light' : 'dark')} style={{ width: 32, height: 32, boxSizing: 'border-box', borderRadius: 8, border: `0.5px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.18)'}`, background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: isDark ? '#fff' : '#0a0a14', fontSize: 16 }}>
                 <i className={isDark ? 'ti ti-moon' : 'ti ti-sun'} />
               </button>
