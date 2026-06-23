@@ -99,22 +99,22 @@ export default function AIInsightsPage() {
             {/* SIDEBAR */}
             <div style={{ width: 60, borderRight: `0.5px solid ${sidebarBorder}`, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '14px 0', gap: 6, flexShrink: 0 }}>
               <Link href="/dashboard" style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sideIconColor }}>
                   <i className="ti ti-layout-dashboard" />
                 </div>
               </Link>
               <Link href="/dashboard/content" style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sideIconColor }}>
                   <i className="ti ti-photo" />
                 </div>
               </Link>
               <Link href="/dashboard/stats" style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sideIconColor }}>
                   <i className="ti ti-chart-bar" />
                 </div>
               </Link>
               <Link href="/dashboard/audience" style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sideIconColor }}>
                   <i className="ti ti-users" />
                 </div>
               </Link>
@@ -124,7 +124,7 @@ export default function AIInsightsPage() {
                 </div>
               </Link>
               <Link href="/dashboard/settings" style={{ textDecoration: 'none', marginTop: 'auto' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sideIconColor }}>
                   <i className="ti ti-settings" />
                 </div>
               </Link>
