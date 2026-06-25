@@ -1,20 +1,23 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const userId = req.cookies.get('session_ig_user_id')?.value
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
-    // 1. Ambil akun
     const { data: account, error: accErr } = await supabaseAdmin
       .from('instagram_accounts')
       .select('*')
-      .eq('user_id', 'local-dev-user')
+      .eq('user_id', userId)
       .single()
 
     if (accErr || !account) {
       return NextResponse.json({ error: 'Akun tidak ditemukan' }, { status: 404 })
     }
 
-    // 2. Ambil media
     const { data: mediaList } = await supabaseAdmin
       .from('instagram_media')
       .select('*')
@@ -22,7 +25,6 @@ export async function GET() {
       .order('timestamp', { ascending: false })
       .limit(20)
 
-    // 3. Ambil insights
     const mediaIds = (mediaList ?? []).map((m) => m.media_id)
     const { data: insightsList } = await supabaseAdmin
       .from('instagram_media_insights')
@@ -34,7 +36,6 @@ export async function GET() {
       insightMap[ins.media_id] = ins
     }
 
-    // 4. Gabungkan
     const enrichedMedia = (mediaList ?? []).map((m) => ({
       caption: m.caption?.slice(0, 100) ?? '',
       media_type: m.media_type,
@@ -48,7 +49,6 @@ export async function GET() {
       engagement: insightMap[m.media_id]?.engagement ?? null,
     }))
 
-    // 5. Buat prompt
     const prompt = `
 Kamu adalah analis konten Instagram profesional untuk akun @${account.username} (${account.name ?? ''}).
 Data akun:
@@ -76,22 +76,13 @@ Hasilkan analisis dalam format JSON SAJA (tanpa markdown, tanpa penjelasan tamba
     { "judul": "...", "penjelasan": "..." }
   ],
   "ide_konten": [
-    "ide 1",
-    "ide 2",
-    "ide 3",
-    "ide 4",
-    "ide 5",
-    "ide 6",
-    "ide 7",
-    "ide 8",
-    "ide 9",
-    "ide 10"
+    "ide 1", "ide 2", "ide 3", "ide 4", "ide 5",
+    "ide 6", "ide 7", "ide 8", "ide 9", "ide 10"
   ]
 }
 
-Gunakan Bahasa Indonesia. Berdasarkan data nyata di atas, bukan contoh generik. Gunakan angka/fakta dari data jika ada.`
+Gunakan Bahasa Indonesia. Berdasarkan data nyata di atas, bukan contoh generik.`
 
-    // 6. Panggil Gemini
     const geminiRes = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
@@ -106,8 +97,6 @@ Gunakan Bahasa Indonesia. Berdasarkan data nyata di atas, bukan contoh generik. 
 
     const geminiData = await geminiRes.json()
     const rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
-
-    // 7. Parse JSON dari Gemini (strip markdown fence jika ada)
     const clean = rawText.replace(/```json|```/g, '').trim()
     let safeJson = clean
     if (!safeJson.endsWith('}')) {

@@ -1,15 +1,19 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
 const BASE = 'https://graph.facebook.com/v20.0'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const userId = req.cookies.get('session_ig_user_id')?.value
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
-    // 1. Ambil akun dari Supabase
     const { data: account, error: accErr } = await supabaseAdmin
       .from('instagram_accounts')
       .select('*')
-      .eq('user_id', 'local-dev-user')
+      .eq('user_id', userId)
       .single()
 
     if (accErr || !account) {
@@ -18,7 +22,6 @@ export async function GET() {
 
     const { ig_user_id, access_token, id: igAccountId } = account
 
-    // 2. Fetch profil IG
     const profileRes = await fetch(
       `${BASE}/${ig_user_id}?fields=id,username,name,followers_count,media_count,profile_picture_url&access_token=${access_token}`
     )
@@ -37,7 +40,6 @@ export async function GET() {
       })
       .eq('id', igAccountId)
 
-    // 3. Fetch media list
     const mediaRes = await fetch(
       `${BASE}/${ig_user_id}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count&limit=50&access_token=${access_token}`
     )
@@ -49,7 +51,6 @@ export async function GET() {
     let insightCount = 0
 
     for (const item of mediaList) {
-      // Upsert ke instagram_media
       const { error: mediaErr } = await supabaseAdmin
         .from('instagram_media')
         .upsert({
@@ -68,8 +69,6 @@ export async function GET() {
 
       if (!mediaErr) savedCount++
 
-      // 4. Fetch insights per media
-      // CAROUSEL_ALBUM tidak support semua metric — tangani gracefully
       const insightMetrics =
         item.media_type === 'VIDEO'
           ? 'reach,saved,shares,views'
@@ -82,7 +81,6 @@ export async function GET() {
           `${BASE}/${item.id}/insights?metric=${insightMetrics}&access_token=${access_token}`
         )
         const insData = await insRes.json()
-
         if (!insData.error && insData.data) {
           for (const m of insData.data) {
             const val = m.values?.[0]?.value ?? null
@@ -92,17 +90,13 @@ export async function GET() {
             if (m.name === 'views') views = val
           }
         }
-      } catch {
-        // Insight gagal → lanjut, simpan null
-      }
+      } catch { /* lanjut */ }
 
-      // 5. Hitung score
       const likes = item.like_count ?? 0
       const comments = item.comments_count ?? 0
       const savedVal = saved ?? 0
       const reachVal = reach ?? 0
       const score = likes * 1 + comments * 3 + savedVal * 10 + reachVal * 0.05
-
       const engagementRate =
         reachVal > 0
           ? ((likes + comments + savedVal) / reachVal) * 100
