@@ -15,7 +15,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Creator Performance Intelligence Dashboard",
-  description: "Instagram analytics dashboard — content insights, followers, and AI recommendations",
+  description: "Instagram analytics dashboard — content insights, followers, and AI recommendations.",
+  openGraph: {
+    title: 'Creator Performance Intelligence Dashboard',
+    description: 'Instagram analytics dashboard — content insights, followers, and AI recommendations.',
+    url: 'https://freehandtools-dashboard.vercel.app',
+    siteName: 'freehandtools',
+  },
 };
 
 export default function RootLayout({
