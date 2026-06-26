@@ -141,7 +141,7 @@ export default function PrivacyPage() {
             <p style={css.p}>
               Saat kamu menghubungkan akun Instagram melalui layanan kami, kami mengumpulkan data berikut dari Meta (Facebook/Instagram) sesuai izin yang kamu berikan:
             </p>
-            <ul style={{ paddingLeft: '20px', margin: '0 0 8px' }}>
+            <ul style={{ paddingLeft: '20px', margin: '0 0 8px', listStyleType: 'disc' }}>
               <li style={css.li}>Informasi profil Instagram: username, foto profil, jumlah followers, jumlah media</li>
               <li style={css.li}>Data konten (media): caption, jenis konten, URL media, tanggal posting, jumlah likes dan komentar</li>
               <li style={css.li}>Data insight: reach, impressions, saves, shares (sesuai ketersediaan dari API Meta)</li>
@@ -153,7 +153,7 @@ export default function PrivacyPage() {
           <div style={css.card}>
             <h2 style={css.h2}>2. Cara Kami Menggunakan Data</h2>
             <p style={css.p}>Data yang dikumpulkan digunakan semata-mata untuk:</p>
-            <ul style={{ paddingLeft: '20px', margin: '0 0 8px' }}>
+            <ul style={{ paddingLeft: '20px', margin: '0 0 8px', listStyleType: 'disc' }}>
               <li style={css.li}>Menampilkan dashboard analytics performa konten Instagram kamu</li>
               <li style={css.li}>Menghasilkan insight otomatis menggunakan AI (Google Gemini) berdasarkan data kontenmu</li>
               <li style={css.li}>Menyimpan snapshot data harian untuk menampilkan tren pertumbuhan dari waktu ke waktu</li>
@@ -176,7 +176,7 @@ export default function PrivacyPage() {
           <div style={css.card}>
             <h2 style={css.h2}>4. Berbagi Data dengan Pihak Ketiga</h2>
             <p style={css.p}>Layanan kami menggunakan pihak ketiga berikut dalam operasionalnya:</p>
-            <ul style={{ paddingLeft: '20px', margin: '0 0 8px' }}>
+            <ul style={{ paddingLeft: '20px', margin: '0 0 8px', listStyleType: 'disc' }}>
               <li style={css.li}><strong>Meta (Facebook/Instagram)</strong> — sumber data melalui Instagram Graph API</li>
               <li style={css.li}><strong>Supabase</strong> — penyimpanan database</li>
               <li style={css.li}><strong>Vercel</strong> — platform hosting aplikasi</li>
@@ -188,7 +188,7 @@ export default function PrivacyPage() {
           <div style={css.card}>
             <h2 style={css.h2}>5. Hak Pengguna & Penghapusan Data</h2>
             <p style={css.p}>Kamu berhak untuk:</p>
-            <ul style={{ paddingLeft: '20px', margin: '0 0 8px' }}>
+            <ul style={{ paddingLeft: '20px', margin: '0 0 8px', listStyleType: 'disc' }}>
               <li style={css.li}>Memutus koneksi Instagram kapan saja melalui menu Pengaturan di dalam dashboard</li>
               <li style={css.li}>Meminta penghapusan seluruh data akunmu dari sistem kami</li>
             </ul>

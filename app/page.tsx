@@ -18,7 +18,13 @@ export default function LandingPage() {
   function updateMask(x: number, y: number) {
     if (!maskRef.current) return
     const bg = isDark ? '#04040a' : '#ffffff'
-    maskRef.current.style.background = `radial-gradient(circle ${R}px at ${x}px ${y}px, transparent 0%, transparent ${R * 0.6}px, ${bg} ${R}px)`
+    maskRef.current.style.background = 
+      `radial-gradient(circle ${R}px at ${x}px ${y}px,
+      transparent 0%,
+      transparent ${R * 0.1}px, 
+      ${bg}40 ${R * 0.4}px,
+      ${bg}80 ${R * 0.8}px,
+      ${bg} ${R}px)`
   }
 
   useEffect(() => {
@@ -141,7 +147,7 @@ export default function LandingPage() {
             Beta · Terbatas 50 pengguna pertama
           </div>
 
-          <h1 style={{ fontSize: 26, fontWeight: 900, color: textPrimary, lineHeight: 1.3, margin: '0 0 10px', letterSpacing: '-0.3px', transition: 'color 0.3s' }}>
+          <h1 style={{ fontSize: 32, fontWeight: 900, color: textPrimary, lineHeight: 1.3, margin: '0 0 10px', letterSpacing: '-0.3px', transition: 'color 0.3s' }}>
             Semua insight Instagram<br />kamu,{' '}
             <span style={{ position: 'relative', display: 'inline-block' }}>
               <span className="ig-text">dalam satu tempat.</span>
@@ -183,6 +189,23 @@ export default function LandingPage() {
               <div style={{ fontSize: 11, color: textTertiary, lineHeight: 1.55, transition: 'color 0.3s' }}>{f.desc}</div>
             </div>
           ))}
+        </div>
+
+        <div style={{
+          textAlign: 'center',
+          padding: '0 12px 16px',
+          position: 'relative',
+          zIndex: 5,
+        }}>
+          <p style={{ fontSize: '11px', margin: 0, color: theme === 'dark' ? 'rgba(255,255,255,0.45)' : 'rgba(10,10,20,0.5)' }}>
+            <a href="/privacy" style={{ color: 'inherit', textDecoration: 'none' }}>
+              Kebijakan Privasi
+            </a>
+            <span style={{ color: theme === 'dark' ? '#c4b0ff' : '#7638FA', margin: '0 8px' }}>✦</span>
+            <a href="/terms" style={{ color: 'inherit', textDecoration: 'none' }}>
+              Syarat Layanan
+            </a>
+          </p>
         </div>
       </div>
     </>

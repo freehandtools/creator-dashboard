@@ -148,7 +148,7 @@ export default function TermsPage() {
             <p style={css.p}>
               freehandtools adalah layanan analytics Instagram gratis yang memungkinkan pemilik akun Instagram Business atau Creator untuk:
             </p>
-            <ul style={{ paddingLeft: '20px', margin: '0 0 8px' }}>
+            <ul style={{ paddingLeft: '20px', margin: '0 0 8px', listStyleType: 'disc' }}>
               <li style={css.li}>Melihat statistik dan insight performa konten Instagram mereka</li>
               <li style={css.li}>Mendapatkan analisis AI otomatis atas data konten</li>
               <li style={css.li}>Memantau pertumbuhan akun dari waktu ke waktu</li>
@@ -161,7 +161,7 @@ export default function TermsPage() {
           <div style={css.card}>
             <h2 style={css.h2}>3. Kelayakan Pengguna</h2>
             <p style={css.p}>Untuk menggunakan Layanan, kamu harus memenuhi syarat berikut:</p>
-            <ul style={{ paddingLeft: '20px', margin: '0 0 8px' }}>
+            <ul style={{ paddingLeft: '20px', margin: '0 0 8px', listStyleType: 'disc' }}>
               <li style={css.li}>Memiliki akun Instagram bertipe Business atau Creator (bukan akun Personal)</li>
               <li style={css.li}>Menghubungkan akun Instagram ke Facebook Page yang kamu kelola</li>
               <li style={css.li}>Memiliki usia minimal 13 tahun, atau usia minimum yang dipersyaratkan di wilayahmu</li>
@@ -174,7 +174,7 @@ export default function TermsPage() {
             <p style={css.p}>
               Dengan menghubungkan akun Instagram kamu, kamu memberikan izin kepada freehandtools untuk:
             </p>
-            <ul style={{ paddingLeft: '20px', margin: '0 0 8px' }}>
+            <ul style={{ paddingLeft: '20px', margin: '0 0 8px', listStyleType: 'disc' }}>
               <li style={css.li}>Membaca data profil, konten, dan insight akun Instagram melalui Meta Graph API</li>
               <li style={css.li}>Menyimpan data tersebut di database kami untuk keperluan tampilan dashboard</li>
               <li style={css.li}>Memproses data konten menggunakan AI untuk menghasilkan insight dan rekomendasi</li>
@@ -190,7 +190,7 @@ export default function TermsPage() {
           <div style={css.card}>
             <h2 style={css.h2}>5. Pembatasan Penggunaan</h2>
             <p style={css.p}>Kamu dilarang untuk:</p>
-            <ul style={{ paddingLeft: '20px', margin: '0 0 8px' }}>
+            <ul style={{ paddingLeft: '20px', margin: '0 0 8px', listStyleType: 'disc' }}>
               <li style={css.li}>Menggunakan Layanan untuk tujuan yang melanggar hukum atau peraturan yang berlaku</li>
               <li style={css.li}>Mencoba mengakses data akun pengguna lain tanpa izin</li>
               <li style={css.li}>Melakukan reverse-engineering, scraping, atau eksploitasi teknis terhadap Layanan</li>
@@ -214,7 +214,7 @@ export default function TermsPage() {
             <p style={css.p}>
               Layanan disediakan &ldquo;sebagaimana adanya&rdquo; (<em>as-is</em>) tanpa jaminan apapun. freehandtools tidak bertanggung jawab atas:
             </p>
-            <ul style={{ paddingLeft: '20px', margin: '0 0 8px' }}>
+            <ul style={{ paddingLeft: '20px', margin: '0 0 8px', listStyleType: 'disc' }}>
               <li style={css.li}>Kerugian yang timbul akibat ketidakakuratan data yang bersumber dari Meta API</li>
               <li style={css.li}>Keputusan bisnis yang diambil berdasarkan insight atau rekomendasi AI dari Layanan</li>
               <li style={css.li}>Kehilangan data akibat penghapusan akun atau pencabutan izin akses</li>

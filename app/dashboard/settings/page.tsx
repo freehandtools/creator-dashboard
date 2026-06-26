@@ -200,6 +200,24 @@ export default function SettingsPage() {
               <SettingsItem label="Model AI" right={<span>Gemini 2.5 Flash</span>} />
               <SettingsItem label="Bahasa output AI" right={<span>Bahasa Indonesia</span>} />
 
+              <GroupLabel label="Tentang" />
+              <SettingsItem
+                label="Kebijakan Privasi"
+                right={
+                  <a href="/privacy" target="_blank" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <i className="ti ti-external-link" style={{ fontSize: 13 }} />
+                  </a>
+                }
+              />
+              <SettingsItem
+                label="Syarat Layanan"
+                right={
+                  <a href="/terms" target="_blank" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <i className="ti ti-external-link" style={{ fontSize: 13 }} />
+                  </a>
+                }
+              />
+
               <GroupLabel label="Akun" />
               <SettingsItem
                 label={disconnecting ? 'Memutuskan koneksi...' : 'Putuskan koneksi Instagram'}

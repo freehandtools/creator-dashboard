@@ -185,6 +185,16 @@ export default function AuthPage() {
             </button>
 
             <p style={{ fontSize: 10, color: textTertiary, marginTop: 12, transition: 'color 0.3s' }}>Hanya akun Business / Creator yang didukung</p>
+            <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.25)', marginTop: '8px', textAlign: 'center', maxWidth: '280px', lineHeight: 1.6, }}>
+              Dengan melanjutkan, kamu menyetujui{' '}
+              <a href="/terms" target="_blank" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'underline' }}>
+                Syarat Layanan
+              </a>
+              {' '}dan{' '}
+              <a href="/privacy" target="_blank" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'underline' }}>
+                Kebijakan Privasi
+              </a>
+            </p>
           </div>
         </div>
       </div>
