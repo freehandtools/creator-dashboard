@@ -190,7 +190,7 @@ export default function LandingPage() {
     @keyframes twinkle{0%,100%{opacity:0.25}50%{opacity:1}}
     .ig-text{background:linear-gradient(90deg,#FFD600,#FF7A00,#FF0069,#D300C5,#7638FA,#FFD600);background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:igShift 4s ease infinite;}
     .ig-text-glow{background:linear-gradient(90deg,#FFD600,#FF7A00,#FF0069,#D300C5,#7638FA,#FFD600);background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:igShift 4s ease infinite,textGlow 4s ease infinite;filter:blur(9px);position:absolute;inset:0;pointer-events:none;mix-blend-mode:${isDark?'screen':'normal'};}
-    .feat-card{background:${isDark?'rgba(255,255,255,0.05)':'rgba(10,10,20,0.03)'};border:0.5px solid ${isDark?'rgba(255,255,255,0.1)':'rgba(10,10,20,0.1)'};border-radius:12px;padding:16px;transition:background 0.3s,border-color 0.3s;}
+    .feat-card{background:${isDark?'rgba(255,255,255,0.05)':'rgba(10,10,20,0.03)'};border:0.5px solid ${isDark?'rgba(255,255,255,0.1)':'rgba(10,10,20,0.1)'};border-radius:12px;padding:16px;backdrop-filter: blur(16px) ${isDark ? '' : 'brightness(1.5) contrast(1.15)'};-webkit-backdrop-filter: blur(16px) ${isDark ? '' : 'brightness(1.5) contrast(1.15)'};transition:background 0.3s,border-color 0.3s;}
     .feat-card:hover{background:${isDark?'rgba(255,255,255,0.09)':'rgba(10,10,20,0.06)'};border-color:${isDark?'rgba(255,255,255,0.18)':'rgba(10,10,20,0.18)'};}
     #star-field{position:absolute;width:200%;height:200%;top:-50%;left:-50%;animation:starRotate 240s linear infinite;pointer-events:none;z-index:8;}
     .blob{position:absolute;border-radius:50%;transform:translate(-50%,-50%);}
