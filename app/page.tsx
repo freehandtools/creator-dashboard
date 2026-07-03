@@ -307,7 +307,7 @@ export default function LandingPage() {
         </div>
         
         {/* CONTENT */}
-        <div style={{padding:'10px 12px 0',position:'relative',zIndex:10,flexShrink:0}}>
+        <div style={{padding:'20px 20px 0',position:'relative',zIndex:10,flexShrink:0}}>
           <nav style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 18px',borderRadius:12,border:`0.5px solid ${borderStrong}`,backdropFilter:'blur(16px)',background:navBg,transition:'all 0.3s'}}>
             <div style={{display:'flex',alignItems:'center',gap:7}}>
               <svg width="15" height="15" viewBox="0 0 500 420" fill={textPrimary} style={{transition:'fill 0.3s'}}>
@@ -318,7 +318,7 @@ export default function LandingPage() {
             </div>
             <div style={{display:'flex',alignItems:'center',gap:8,height:32}}>
               <a
-                href="mailto:freehandtools@gmail.com"
+                href="mailto:freehandtools@gmail.com?subject=Masalah%20Landing%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Landing%20Page%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F"
                 style={{display:'inline-flex',alignItems:'center',gap:6,height:32,boxSizing:'border-box',background:cardBg,border:`0.5px solid ${borderStrong}`,borderRadius:8,padding:'0 14px',fontSize:11,color:textPrimary,cursor:'pointer',transition:'all 0.3s',textDecoration:'none'}}
               >
                 <i className="ti ti-message" style={{fontSize:13}}/>
@@ -335,7 +335,7 @@ export default function LandingPage() {
         </div>
 
         <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'flex-start',position:'relative',zIndex:7}}>
-          <div className="hero-text" style={{marginTop: 'max(4vh, calc((100vw - 760px) * 0.45))',paddingLeft:44,paddingRight:32,paddingBottom:40,maxWidth:'52%'}}>
+          <div className="hero-text" style={{marginTop: 'max(8vh, calc((100vw - 760px) * 0.35))',paddingLeft:52,paddingRight:30,paddingBottom:46,maxWidth:'52%'}}>
             <div className="hero-badge" style={{display:'inline-flex',alignItems:'center',gap:6,background:badgeBg,border:`0.5px solid ${badgeBorder}`,borderRadius:20,padding:'4px 12px',fontSize:11,color:badgeText,marginBottom:16,transition:'all 0.3s',alignSelf:'flex-start'}}>
               <i className="ti ti-sparkles" style={{fontSize:12}}/>
               Beta · Terbatas 50 pengguna pertama
@@ -374,7 +374,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,padding:'0 12px 12px',position:'relative',zIndex:7}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,padding:'0 20px 20px',position:'relative',zIndex:7}}>
           {[
             {icon:'ti-layout-dashboard',title:'Overview',desc:'Metrik akun & pertumbuhan follower dalam satu layar'},
             {icon:'ti-photo',title:'Konten',desc:'Ranking & skor tiap post dan reel berdasarkan performa nyata'},
