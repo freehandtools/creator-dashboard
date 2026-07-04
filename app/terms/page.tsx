@@ -72,7 +72,7 @@ export default function TermsPage() {
       <title>Syarat Layanan — freehandtools</title>
       <div style={css.wrap}>
         {/* Navbar */}
-        <div style={{ padding: '10px 12px 0', position: 'relative', zIndex: 10 }}>
+        <div style={{ padding: '20px 20px 0', position: 'sticky', top: '0', zIndex: 10 }}>
           <nav style={css.nav}>
             <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '7px', textDecoration: 'none' }}>
               <svg width="15" height="15" viewBox="0 0 500 420" fill={isDark ? 'white' : '#0a0a14'}>

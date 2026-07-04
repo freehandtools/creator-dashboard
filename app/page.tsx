@@ -335,7 +335,7 @@ export default function LandingPage() {
         </div>
 
         <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'flex-start',position:'relative',zIndex:7}}>
-          <div className="hero-text" style={{marginTop: 'max(8vh, calc((100vw - 760px) * 0.35))',paddingLeft:52,paddingRight:30,paddingBottom:46,maxWidth:'52%'}}>
+          <div className="hero-text" style={{marginTop: 'max(8vh, calc((100vw - 760px) * 0.25))',paddingLeft:52,paddingRight:30,paddingBottom:46,maxWidth:'52%'}}>
             <div className="hero-badge" style={{display:'inline-flex',alignItems:'center',gap:6,background:badgeBg,border:`0.5px solid ${badgeBorder}`,borderRadius:20,padding:'4px 12px',fontSize:11,color:badgeText,marginBottom:16,transition:'all 0.3s',alignSelf:'flex-start'}}>
               <i className="ti ti-sparkles" style={{fontSize:12}}/>
               Beta · Terbatas 50 pengguna pertama
