@@ -1,13 +1,19 @@
 const BASE = 'https://graph.facebook.com/v20.0'
 
 export async function exchangeCodeForToken(code: string): Promise<string> {
-  const url = new URL(`${BASE}/oauth/access_token`)
-  url.searchParams.set('client_id', process.env.META_APP_ID!)
-  url.searchParams.set('client_secret', process.env.META_APP_SECRET!)
-  url.searchParams.set('redirect_uri', process.env.META_REDIRECT_URI!)
-  url.searchParams.set('code', code)
+  const body = new URLSearchParams({
+    client_id: process.env.META_APP_ID!,
+    client_secret: process.env.META_APP_SECRET!,
+    redirect_uri: process.env.META_REDIRECT_URI!,
+    code: code,
+  })
 
-  const res = await fetch(url.toString())
+  const res = await fetch(`${BASE}/oauth/access_token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body.toString(),
+  })
+
   const data = await res.json()
   console.log('SHORT TOKEN RESPONSE:', JSON.stringify(data, null, 2))
   if (data.error) throw new Error(data.error.message)
@@ -15,13 +21,19 @@ export async function exchangeCodeForToken(code: string): Promise<string> {
 }
 
 export async function getLongLivedToken(shortToken: string): Promise<string> {
-  const url = new URL(`${BASE}/oauth/access_token`)
-  url.searchParams.set('grant_type', 'fb_exchange_token')
-  url.searchParams.set('client_id', process.env.META_APP_ID!)
-  url.searchParams.set('client_secret', process.env.META_APP_SECRET!)
-  url.searchParams.set('fb_exchange_token', shortToken)
+  const body = new URLSearchParams({
+    grant_type: 'fb_exchange_token',
+    client_id: process.env.META_APP_ID!,
+    client_secret: process.env.META_APP_SECRET!,
+    fb_exchange_token: shortToken,
+  })
 
-  const res = await fetch(url.toString())
+  const res = await fetch(`${BASE}/oauth/access_token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body.toString(),
+  })
+
   const data = await res.json()
   console.log('LONG TOKEN RESPONSE:', JSON.stringify(data, null, 2))
   if (data.error) throw new Error(data.error.message)
@@ -37,7 +49,6 @@ export async function getIGAccountFromPages(userToken: string) {
   )
   const testData = await testRes.json()
   console.log('IG ACCESS TEST:', JSON.stringify(testData, null, 2))
-
   if (testData.error) throw new Error(`Token tidak bisa akses IG: ${testData.error.message}`)
 
   return {
