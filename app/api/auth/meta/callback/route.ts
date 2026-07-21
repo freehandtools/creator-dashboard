@@ -46,9 +46,12 @@ export async function GET(req: NextRequest) {
       path: '/',
     })
     return res
-  } catch (err: unknown) {
+} catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error'
-    console.error('OAuth callback error:', message)
-    return NextResponse.redirect(new URL(`/?error=${encodeURIComponent(message)}`, req.url))
+    const cause = err instanceof Error && 'cause' in err ? String((err as any).cause) : 'no-cause'
+    console.error('OAuth callback error:', err)
+    return NextResponse.redirect(
+      new URL(`/?error=${encodeURIComponent(message + ' | ' + cause)}`, req.url)
+    )
   }
 }
