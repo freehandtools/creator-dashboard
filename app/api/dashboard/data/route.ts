@@ -7,6 +7,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const { searchParams } = new URL(request.url)
+  const periodParam = searchParams.get('period')
+
   const { data: account } = await supabaseAdmin
     .from('instagram_accounts')
     .select('username, name, followers_count, media_count, profile_picture_url, updated_at')
@@ -19,10 +22,18 @@ export async function GET(request: NextRequest) {
     .eq('user_id', userId)
     .single()
 
-  const { data: media } = await supabaseAdmin
+  let mediaQuery = supabaseAdmin
     .from('instagram_media')
     .select('media_id, caption, media_type, media_url, thumbnail_url, permalink, timestamp, like_count, comments_count')
     .eq('ig_account_id', accountFull?.id)
+
+  if (periodParam) {
+    const period = parseInt(periodParam, 10)
+    const since = new Date(Date.now() - period * 24 * 60 * 60 * 1000).toISOString()
+    mediaQuery = mediaQuery.gte('timestamp', since)
+  }
+
+  const { data: media } = await mediaQuery
     .order('timestamp', { ascending: false })
     .limit(50)
 
