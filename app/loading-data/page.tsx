@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTheme } from '../_components/use-theme'
+import Link from 'next/link'
 
 type Step = {
   label: string
@@ -18,7 +20,7 @@ const INITIAL_STEPS: Step[] = [
 
 export default function LoadingDataPage() {
   const router = useRouter()
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const { theme, toggleTheme } = useTheme()
   const [steps, setSteps] = useState<Step[]>(INITIAL_STEPS)
   const [error, setError] = useState<string | null>(null)
   const [dots, setDots] = useState('.')
@@ -29,18 +31,6 @@ export default function LoadingDataPage() {
     const id = setInterval(() => setDots(d => d.length >= 3 ? '.' : d + '.'), 500)
     return () => clearInterval(id)
   }, [])
-
-  // Theme from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
-    if (saved) setTheme(saved)
-  }, [])
-
-  function toggleTheme() {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    localStorage.setItem('theme', next)
-  }
 
   function setStep(index: number, status: Step['status'], label?: string) {
     setSteps(prev => prev.map((s, i) =>
@@ -113,7 +103,7 @@ export default function LoadingDataPage() {
   return (
     <>
     <title>Mengambil Data — Creator Performance Intelligence Dashboard</title>
-    <div style={{
+    <div className="theme-page-root" style={{
       minHeight: '100vh', background: bg, display: 'flex', flexDirection: 'column',
       transition: 'background 0.3s', fontFamily: 'system-ui, sans-serif'
     }}>
@@ -128,10 +118,10 @@ export default function LoadingDataPage() {
           border: `0.5px solid ${navBorder}`,
           backdropFilter: 'blur(16px)', background: navBg, transition: 'all 0.3s'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+          <Link href="/" aria-label="Kembali ke halaman utama" style={{ display: 'flex', alignItems: 'center', gap: 7, textDecoration: 'none' }}>
             <FreehandLogo color={textPrimary} />
             <span style={{ fontSize: 12, fontWeight: 500, color: textPrimary, transition: 'color 0.3s' }}>freehandtools</span>
-          </div>
+          </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <a href="mailto:freehandtools@gmail.com?subject=Masalah%20Loading%20Data%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Loading%20Data%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F"
               style={{
@@ -142,7 +132,7 @@ export default function LoadingDataPage() {
               <i className="ti ti-message" style={{ fontSize: 13 }} />
               Hubungi Kami
             </a>
-            <button onClick={toggleTheme} style={{
+            <button onClick={toggleTheme} aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'} style={{
               width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`,
               background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', color: textPrimary, fontSize: 16, transition: 'all 0.2s'
@@ -206,7 +196,7 @@ export default function LoadingDataPage() {
 
           {error && (
             <button
-              onClick={() => { window.location.href = '/api/auth/meta/start' }}
+              onClick={() => { window.location.href = '/auth' }}
               style={{
                 marginTop: 16, padding: '10px 22px', borderRadius: 22, border: 'none',
                 background: 'linear-gradient(90deg,#FFD600,#FF7A00,#FF0069,#D300C5,#7638FA)',

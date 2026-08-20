@@ -2,7 +2,12 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { DashboardBody, DashboardTopbar, useDashboardTheme } from '../_components/dashboard-chrome'
+
+type Account = {
+  username: string
+  profile_picture_url: string | null
+}
 
 type MediaItem = {
   id: string
@@ -30,29 +35,20 @@ type FilterType = 'ALL' | 'CAROUSEL_ALBUM' | 'IMAGE' | 'VIDEO'
 
 export default function ContentPage() {
   const router = useRouter()
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const { theme, toggleTheme } = useDashboardTheme()
+  const [account, setAccount] = useState<Account | null>(null)
   const [media, setMedia] = useState<MediaItem[]>([])
   const [loading, setLoading] = useState(true)
   const [sortKey, setSortKey] = useState<SortKey>('score')
   const [sortAsc, setSortAsc] = useState(false)
   const [filterType, setFilterType] = useState<FilterType>('ALL')
 
-  useEffect(() => {
-    const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
-    if (saved) setTheme(saved)
-  }, [])
-
-  function toggleTheme() {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    localStorage.setItem('theme', next)
-  }
-
   const fetchData = useCallback(async () => {
     setLoading(true)
     try {
       const res = await fetch('/api/dashboard/data')
       const json = await res.json()
+      setAccount(json.account ?? null)
       setMedia(json.media || [])
     } catch {
       // silent
@@ -91,13 +87,11 @@ export default function ContentPage() {
   const bg = isDark ? '#08080f' : '#f7f7fa'
   const navBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)'
   const navBorder = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.15)'
-  const topbarBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(10,10,20,0.07)'
   const textPrimary = isDark ? '#fff' : '#0a0a14'
   const textSecondary = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(10,10,20,0.5)'
   const textTertiary = isDark ? 'rgba(255,255,255,0.32)' : 'rgba(10,10,20,0.35)'
   const cardBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(10,10,20,0.03)'
   const cardBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(10,10,20,0.08)'
-  const sidebarBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(10,10,20,0.07)'
   const chipBorder = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(10,10,20,0.12)'
   const chipColor = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(10,10,20,0.5)'
   const chipActiveBg = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.08)'
@@ -108,7 +102,6 @@ export default function ContentPage() {
   const thumbBg = isDark ? 'linear-gradient(135deg,#2a1a3a,#1a1430)' : 'linear-gradient(135deg,#e8e0f0,#d0c8e8)'
   const thumbColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(10,10,20,0.15)'
   const toggleBg = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)'
-  const sIconColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(10,10,20,0.4)'
   const typeBadgeBg = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(10,10,20,0.06)'
   const typeBadgeColor = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(10,10,20,0.4)'
   const trHover = isDark ? 'rgba(255,255,255,0.025)' : 'rgba(10,10,20,0.025)'
@@ -137,25 +130,17 @@ export default function ContentPage() {
     return t
   }
 
-  const SIDEBAR_ITEMS = [
-    { icon: 'ti-layout-dashboard', href: '/dashboard' },
-    { icon: 'ti-photo', href: '/dashboard/content', active: true },
-    { icon: 'ti-chart-bar', href: '/dashboard/stats' },
-    { icon: 'ti-users', href: '/dashboard/audience' },
-    { icon: 'ti-bulb', href: '/dashboard/ai' },
-  ]
-
-  const FILTER_CHIPS: { label: string; value: FilterType }[] = [
-    { label: `Semua (${counts.ALL || 0})`, value: 'ALL' },
-    { label: `Reels (${counts.VIDEO || 0})`, value: 'VIDEO' },
-    { label: `Carousel (${counts.CAROUSEL_ALBUM || 0})`, value: 'CAROUSEL_ALBUM' },
-    { label: `Foto (${counts.IMAGE || 0})`, value: 'IMAGE' },
+  const FILTER_CHIPS: { label: string; value: FilterType; icon: string }[] = [
+    { label: `Semua (${counts.ALL || 0})`, value: 'ALL', icon: 'ti-layout-grid' },
+    { label: `Reels (${counts.VIDEO || 0})`, value: 'VIDEO', icon: 'ti-brand-instagram' },
+    { label: `Carousel (${counts.CAROUSEL_ALBUM || 0})`, value: 'CAROUSEL_ALBUM', icon: 'ti-carousel-horizontal' },
+    { label: `Foto (${counts.IMAGE || 0})`, value: 'IMAGE', icon: 'ti-photo' },
   ]
 
   return (
     <>
     <title>Konten — Creator Performance Intelligence Dashboard</title>
-    <div style={{ height: '100vh', overflow: 'hidden', background: bg, display: 'flex', flexDirection: 'column', transition: 'background 0.3s', fontFamily: 'system-ui,sans-serif' }}>
+    <div className="dashboard-page-root" style={{ background: bg, display: 'flex', flexDirection: 'column', transition: 'background 0.3s', fontFamily: 'system-ui,sans-serif' }}>
       <style>{`
         @keyframes igShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         .tr-hover:hover td { background: ${trHover}; cursor: pointer; }
@@ -172,7 +157,7 @@ export default function ContentPage() {
             <a href="mailto:freehandtools@gmail.com?subject=Masalah%20Konten%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Konten%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, background: cardBg, border: `0.5px solid ${navBorder}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, textDecoration: 'none', cursor: 'pointer' }}>
               <i className="ti ti-message" style={{ fontSize: 13 }} />Hubungi Kami
             </a>
-            <button onClick={toggleTheme} style={{ width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`, background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
+            <button onClick={toggleTheme} aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'} style={{ width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`, background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
               <i className={`ti ${isDark ? 'ti-moon' : 'ti-sun'}`} />
             </button>
           </div>
@@ -182,45 +167,43 @@ export default function ContentPage() {
       {/* APP SHELL */}
       <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
         {/* TOPBAR */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', borderBottom: `0.5px solid ${topbarBorder}`, flexShrink: 0 }}>
-          <div style={{ fontSize: 18, fontWeight: 900, color: textPrimary }}>Konten</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <DashboardTopbar
+          title="Konten"
+          isDark={isDark}
+          actions={
+            <>
             <button onClick={() => toggleSort('timestamp')} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, color: textSecondary, cursor: 'pointer', border: `0.5px solid ${chipBorder}`, borderRadius: 7, padding: '5px 11px', background: 'transparent' }}>
               <i className="ti ti-sort-descending" style={{ fontSize: 13 }} /> Terbaru <SortIcon k="timestamp" />
             </button>
             <button onClick={() => toggleSort('score')} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, color: textSecondary, cursor: 'pointer', border: `0.5px solid ${chipBorder}`, borderRadius: 7, padding: '5px 11px', background: 'transparent' }}>
               <i className="ti ti-star" style={{ fontSize: 13 }} /> Skor <SortIcon k="score" />
             </button>
-            <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#d3d6da', display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1.5px solid ${navBorder}`, flexShrink: 0 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.5 0-10.4 1.8-10.4 5.3v1.1h20.8v-1.1c0-3.5-6.9-5.3-10.4-5.3z" /></svg>
-            </div>
-          </div>
-        </div>
+            <a
+              href={account?.username ? `https://www.instagram.com/${encodeURIComponent(account.username)}/` : undefined}
+              target={account?.username ? '_blank' : undefined}
+              rel={account?.username ? 'noreferrer' : undefined}
+              aria-label={account?.username ? `Buka profil Instagram @${account.username}` : 'Foto profil pengguna'}
+              title={account?.username ? `@${account.username}` : undefined}
+              style={{ display: 'block', borderRadius: '50%', lineHeight: 0, cursor: account?.username ? 'pointer' : 'default' }}
+            >
+              <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#d3d6da', display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1.5px solid ${navBorder}`, flexShrink: 0, overflow: 'hidden' }}>
+                {account?.profile_picture_url
+                  ? <img src={account.profile_picture_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={`Foto profil @${account.username}`} />
+                  : <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.5 0-10.4 1.8-10.4 5.3v1.1h20.8v-1.1c0-3.5-6.9-5.3-10.4-5.3z" /></svg>
+                }
+              </div>
+            </a>
+            </>
+          }
+        />
 
         {/* BODY */}
-        <div style={{ flex: 1, minHeight: 0, display: 'flex' }}>
-          {/* SIDEBAR */}
-          <div style={{ width: 60, borderRight: `0.5px solid ${sidebarBorder}`, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '14px 0', gap: 6, flexShrink: 0 }}>
-            {SIDEBAR_ITEMS.map((item, i) => (
-              <Link key={i} href={item.href} style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: item.active ? '#fff' : sIconColor, background: item.active ? 'linear-gradient(135deg,#FF7A00,#FF0069,#7638FA)' : 'transparent', cursor: 'pointer' }}>
-                  <i className={`ti ${item.icon}`} />
-                </div>
-              </Link>
-            ))}
-            <Link href="/dashboard/settings" style={{ textDecoration: 'none', marginTop: 'auto' }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor, cursor: 'pointer' }}>
-                <i className="ti ti-settings" />
-              </div>
-            </Link>
-          </div>
-
-          {/* MAIN SCROLL */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: 18 }}>
+        <DashboardBody activePage="content" isDark={isDark}>
             {/* Filter chips */}
             <div style={{ display: 'flex', gap: 8, marginBottom: 14, overflowX: 'auto' }}>
               {FILTER_CHIPS.map(chip => (
-                <button key={chip.value} onClick={() => setFilterType(chip.value)} style={{ fontSize: 11, padding: '5px 12px', borderRadius: 16, border: `0.5px solid ${filterType === chip.value ? chipActiveBorder : chipBorder}`, color: filterType === chip.value ? textPrimary : chipColor, background: filterType === chip.value ? chipActiveBg : 'transparent', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s' }}>
+                <button key={chip.value} onClick={() => setFilterType(chip.value)} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, padding: '5px 12px', borderRadius: 16, border: `0.5px solid ${filterType === chip.value ? chipActiveBorder : chipBorder}`, color: filterType === chip.value ? textPrimary : chipColor, background: filterType === chip.value ? chipActiveBg : 'transparent', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s' }}>
+                  <i className={`ti ${chip.icon}`} aria-hidden="true" style={{ fontSize: 13, color: isDark ? 'rgba(255,255,255,0.48)' : 'rgba(10,10,20,0.42)' }} />
                   {chip.label}
                 </button>
               ))}
@@ -306,8 +289,7 @@ export default function ContentPage() {
                 {sorted.length} konten · klik baris untuk lihat detail
               </div>
             )}
-          </div>
-        </div>
+        </DashboardBody>
       </div>
     </div>
     </>

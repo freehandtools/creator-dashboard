@@ -1,20 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import type React from 'react'
+import { useTheme } from '../_components/use-theme'
 
 export default function TermsPage() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
-
-  useEffect(() => {
-    const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
-    if (saved) setTheme(saved)
-  }, [])
-
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    localStorage.setItem('theme', next)
-  }
+  const { theme, toggleTheme } = useTheme()
 
   const isDark = theme === 'dark'
 
@@ -70,7 +60,7 @@ export default function TermsPage() {
   return (
     <>
       <title>Syarat Layanan — freehandtools</title>
-      <div style={css.wrap}>
+      <div className="theme-page-root" style={css.wrap}>
         {/* Navbar */}
         <div style={{ padding: '20px 20px 0', position: 'sticky', top: '0', zIndex: 10 }}>
           <nav style={css.nav}>
@@ -97,6 +87,7 @@ export default function TermsPage() {
               </a>
               <button
                 onClick={toggleTheme}
+                aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'}
                 style={{
                   width: '32px', height: '32px', borderRadius: '8px',
                   border: `0.5px solid ${isDark ? 'rgba(255,255,255,0.2)' : 'rgba(10,10,20,0.18)'}`,

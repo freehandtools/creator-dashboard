@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import Link from 'next/link'
+import { DashboardBody, DashboardTopbar, useDashboardTheme } from '../../_components/dashboard-chrome'
 
 type MediaDetail = {
   id: string
@@ -30,23 +30,12 @@ export default function ContentDetailPage() {
   const params = useParams()
   const mediaId = params.id as string
 
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const { theme, toggleTheme } = useDashboardTheme()
   const [item, setItem] = useState<MediaDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [animatedValues, setAnimatedValues] = useState<Record<string, number>>({})
   const [scoreWidth, setScoreWidth] = useState(0)
-
-  useEffect(() => {
-    const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
-    if (saved) setTheme(saved)
-  }, [])
-
-  function toggleTheme() {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    localStorage.setItem('theme', next)
-  }
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -103,15 +92,12 @@ export default function ContentDetailPage() {
   const bg = isDark ? '#08080f' : '#f7f7fa'
   const navBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)'
   const navBorder = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.15)'
-  const topbarBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(10,10,20,0.07)'
   const textPrimary = isDark ? '#fff' : '#0a0a14'
   const textSecondary = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(10,10,20,0.5)'
   const textTertiary = isDark ? 'rgba(255,255,255,0.32)' : 'rgba(10,10,20,0.35)'
   const cardBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(10,10,20,0.03)'
   const cardBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(10,10,20,0.08)'
-  const sidebarBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(10,10,20,0.07)'
   const toggleBg = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)'
-  const sIconColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(10,10,20,0.4)'
   const thumbBg = isDark ? 'linear-gradient(135deg,#2a1a3a,#1a1430)' : 'linear-gradient(135deg,#e8e0f0,#d0c8e8)'
   const thumbColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(10,10,20,0.15)'
   const dashedBorder = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(10,10,20,0.15)'
@@ -134,14 +120,6 @@ export default function ContentDetailPage() {
     return t
   }
 
-  const SIDEBAR_ITEMS = [
-    { icon: 'ti-layout-dashboard', href: '/dashboard' },
-    { icon: 'ti-photo', href: '/dashboard/content', active: true },
-    { icon: 'ti-chart-bar', href: '/dashboard/stats' },
-    { icon: 'ti-users', href: '/dashboard/audience' },
-    { icon: 'ti-bulb', href: '/dashboard/ai' },
-  ]
-
   const METRIC_CARDS = [
     { label: 'Views', key: 'views', raw: ins?.views },
     { label: 'Reach', key: 'reach', raw: ins?.reach },
@@ -155,7 +133,7 @@ export default function ContentDetailPage() {
   return (
     <>
     <title>Detail Konten — Creator Performance Intelligence Dashboard</title>
-    <div style={{ height: '100vh', overflow: 'hidden', background: bg, display: 'flex', flexDirection: 'column', transition: 'background 0.3s', fontFamily: 'system-ui,sans-serif' }}>
+    <div className="dashboard-page-root" style={{ background: bg, display: 'flex', flexDirection: 'column', transition: 'background 0.3s', fontFamily: 'system-ui,sans-serif' }}>
       <style>{`
         @keyframes igShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         @keyframes shimmer { 0%{opacity:0.4} 50%{opacity:0.8} 100%{opacity:0.4} }
@@ -172,7 +150,7 @@ export default function ContentDetailPage() {
             <a href="mailto:freehandtools@gmail.com?subject=Masalah%20Detail%20Konten%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Detail%20Konten%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, background: cardBg, border: `0.5px solid ${navBorder}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, textDecoration: 'none', cursor: 'pointer' }}>
               <i className="ti ti-message" style={{ fontSize: 13 }} />Hubungi Kami
             </a>
-            <button onClick={toggleTheme} style={{ width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`, background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
+            <button onClick={toggleTheme} aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'} style={{ width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`, background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
               <i className={`ti ${isDark ? 'ti-moon' : 'ti-sun'}`} />
             </button>
           </div>
@@ -182,41 +160,24 @@ export default function ContentDetailPage() {
       {/* APP SHELL */}
       <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
         {/* TOPBAR */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', borderBottom: `0.5px solid ${topbarBorder}`, flexShrink: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <DashboardTopbar
+          title="Detail Konten"
+          isDark={isDark}
+          leading={
             <button onClick={() => router.push('/dashboard/content')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: textTertiary, fontSize: 18, display: 'flex', alignItems: 'center', padding: 0 }}>
               <i className="ti ti-arrow-left" />
             </button>
-            <span style={{ fontSize: 18, fontWeight: 900, color: textPrimary }}>Detail Konten</span>
-          </div>
-          {item?.permalink && (
+          }
+          actions={item?.permalink ? (
             <a href={item.permalink} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 20, border: 'none', background: 'linear-gradient(90deg,#FFD600,#FF7A00,#FF0069,#D300C5,#7638FA)', backgroundSize: '200% 100%', animation: 'igShift 4s ease infinite', color: '#fff', fontSize: 11, fontWeight: 600, textDecoration: 'none' }}>
               <i className="ti ti-external-link" style={{ fontSize: 13 }} />
               Buka di Instagram
             </a>
-          )}
-        </div>
+          ) : undefined}
+        />
 
         {/* BODY */}
-        <div style={{ flex: 1, minHeight: 0, display: 'flex' }}>
-          {/* SIDEBAR */}
-          <div style={{ width: 60, borderRight: `0.5px solid ${sidebarBorder}`, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '14px 0', gap: 6, flexShrink: 0 }}>
-            {SIDEBAR_ITEMS.map((it, i) => (
-              <Link key={i} href={it.href} style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: it.active ? '#fff' : sIconColor, background: it.active ? 'linear-gradient(135deg,#FF7A00,#FF0069,#7638FA)' : 'transparent', cursor: 'pointer' }}>
-                  <i className={`ti ${it.icon}`} />
-                </div>
-              </Link>
-            ))}
-            <Link href="/dashboard/settings" style={{ textDecoration: 'none', marginTop: 'auto' }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
-                <i className="ti ti-settings" />
-              </div>
-            </Link>
-          </div>
-
-          {/* MAIN SCROLL */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: 18 }}>
+        <DashboardBody activePage="content" isDark={isDark}>
 
             {loading && (
               <div style={{ display: 'flex', gap: 18 }}>
@@ -330,8 +291,7 @@ export default function ContentDetailPage() {
                 </div>
               </div>
             )}
-          </div>
-        </div>
+        </DashboardBody>
       </div>
     </div>
     </>

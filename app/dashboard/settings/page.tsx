@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { DashboardBody, DashboardTopbar, useDashboardTheme } from '../_components/dashboard-chrome'
 
 type Account = {
   username: string | null
@@ -14,23 +14,15 @@ type Account = {
 
 export default function SettingsPage() {
   const router = useRouter()
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const { theme, toggleTheme } = useDashboardTheme()
   const [account, setAccount] = useState<Account | null>(null)
   const [autoRefresh, setAutoRefresh] = useState(true)
   const [disconnecting, setDisconnecting] = useState(false)
 
   useEffect(() => {
-    const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
-    if (saved) setTheme(saved)
     const ar = localStorage.getItem('autoRefresh')
     if (ar !== null) setAutoRefresh(ar === 'true')
   }, [])
-
-  function toggleTheme() {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    localStorage.setItem('theme', next)
-  }
 
   function toggleAutoRefresh() {
     const next = !autoRefresh
@@ -68,25 +60,13 @@ export default function SettingsPage() {
   const bg = isDark ? '#08080f' : '#f7f7fa'
   const navBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)'
   const navBorder = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.15)'
-  const topbarBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(10,10,20,0.07)'
   const textPrimary = isDark ? '#fff' : '#0a0a14'
   const textSecondary = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(10,10,20,0.5)'
   const textTertiary = isDark ? 'rgba(255,255,255,0.32)' : 'rgba(10,10,20,0.35)'
   const cardBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(10,10,20,0.03)'
-  const cardBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(10,10,20,0.08)'
-  const sidebarBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(10,10,20,0.07)'
   const toggleBg = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)'
-  const sIconColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(10,10,20,0.4)'
   const itemBorder = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(10,10,20,0.06)'
   const groupLabelColor = isDark ? 'rgba(255,255,255,0.3)' : 'rgba(10,10,20,0.3)'
-
-  const SIDEBAR_ITEMS = [
-    { icon: 'ti-layout-dashboard', href: '/dashboard' },
-    { icon: 'ti-photo', href: '/dashboard/content' },
-    { icon: 'ti-chart-bar', href: '/dashboard/stats' },
-    { icon: 'ti-users', href: '/dashboard/audience' },
-    { icon: 'ti-bulb', href: '/dashboard/ai' },
-  ]
 
   function SettingsItem({ label, right, danger = false }: { label: string; right: React.ReactNode; danger?: boolean }) {
     return (
@@ -112,7 +92,7 @@ export default function SettingsPage() {
   return (
     <>
     <title>Pengaturan — Creator Performance Intelligence Dashboard</title>
-    <div style={{ height: '100vh', overflow: 'hidden', background: bg, display: 'flex', flexDirection: 'column', transition: 'background 0.3s', fontFamily: 'system-ui,sans-serif' }}>
+    <div className="dashboard-page-root" style={{ background: bg, display: 'flex', flexDirection: 'column', transition: 'background 0.3s', fontFamily: 'system-ui,sans-serif' }}>
       <style>{`@keyframes igShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }`}</style>
 
       {/* NAVBAR */}
@@ -126,7 +106,7 @@ export default function SettingsPage() {
             <a href="mailto:freehandtools@gmail.com?subject=Masalah%20Pengaturan%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Pengaturan%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, background: cardBg, border: `0.5px solid ${navBorder}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, textDecoration: 'none', cursor: 'pointer' }}>
               <i className="ti ti-message" style={{ fontSize: 13 }} />Hubungi Kami
             </a>
-            <button onClick={toggleTheme} style={{ width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`, background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
+            <button onClick={toggleTheme} aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'} style={{ width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`, background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
               <i className={`ti ${isDark ? 'ti-moon' : 'ti-sun'}`} />
             </button>
           </div>
@@ -136,30 +116,10 @@ export default function SettingsPage() {
       {/* APP SHELL */}
       <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
         {/* TOPBAR */}
-        <div style={{ display: 'flex', alignItems: 'center', padding: '12px 18px', borderBottom: `0.5px solid ${topbarBorder}`, flexShrink: 0 }}>
-          <span style={{ fontSize: 18, fontWeight: 900, color: textPrimary }}>Pengaturan</span>
-        </div>
+        <DashboardTopbar title="Pengaturan" isDark={isDark} />
 
         {/* BODY */}
-        <div style={{ flex: 1, minHeight: 0, display: 'flex' }}>
-          {/* SIDEBAR */}
-          <div style={{ width: 60, borderRight: `0.5px solid ${sidebarBorder}`, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '14px 0', gap: 6, flexShrink: 0 }}>
-            {SIDEBAR_ITEMS.map((item, i) => (
-              <Link key={i} href={item.href} style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor, cursor: 'pointer' }}>
-                  <i className={`ti ${item.icon}`} />
-                </div>
-              </Link>
-            ))}
-            <div style={{ marginTop: 'auto' }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: '#fff', background: 'linear-gradient(135deg,#FF7A00,#FF0069,#7638FA)', cursor: 'pointer' }}>
-                <i className="ti ti-settings" />
-              </div>
-            </div>
-          </div>
-
-          {/* MAIN SCROLL */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: 18 }}>
+        <DashboardBody activePage="settings" isDark={isDark}>
             <div style={{ maxWidth: 480, margin: '0 auto' }}>
 
               {/* Profil akun */}
@@ -235,8 +195,7 @@ export default function SettingsPage() {
                 <span style={{ fontSize: 10 }}>Data diambil langsung dari Meta Graph API</span>
               </div>
             </div>
-          </div>
-        </div>
+        </DashboardBody>
       </div>
     </div>
     </>

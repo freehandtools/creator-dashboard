@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react'
 import Link from 'next/link'
+import { DashboardBody, DashboardTopbar, useDashboardTheme } from './_components/dashboard-chrome'
 
 type Period = 7 | 30 | 90
 
@@ -46,7 +47,7 @@ function animateCount(el: HTMLElement, target: number, duration = 1200) {
 }
 
 export default function DashboardPage() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const { theme, toggleTheme } = useDashboardTheme()
   const [period, setPeriod] = useState<Period>(30)
   const [account, setAccount] = useState<Account | null>(null)
   const [media, setMedia] = useState<MediaRow[]>([])
@@ -151,14 +152,14 @@ export default function DashboardPage() {
   const displayName = account?.name ?? account?.username ?? ''
 
   const metrics = [
-    { label: 'Followers', value: account?.followers_count ?? 0 },
-    { label: 'Total Likes', value: totalLikes },
-    { label: 'Total Reach', value: totalReach },
-    { label: 'Komentar', value: totalComments },
-    { label: 'Total Post', value: media.length },
-    { label: 'Engaged', value: engaged, sub: 'akun' },
-    { label: 'Profile Visits', value: 0, sub: 'via snapshot' },
-    { label: 'Link Clicks', value: 0, sub: 'via snapshot' },
+    { label: 'Followers', value: account?.followers_count ?? 0, icon: 'ti-users' },
+    { label: 'Total Likes', value: totalLikes, icon: 'ti-heart' },
+    { label: 'Total Reach', value: totalReach, icon: 'ti-broadcast' },
+    { label: 'Komentar', value: totalComments, icon: 'ti-message-circle' },
+    { label: 'Total Post', value: media.length, icon: 'ti-photo' },
+    { label: 'Engaged', value: engaged, icon: 'ti-user-check' },
+    { label: 'Profile Visits', value: 0, icon: 'ti-eye' },
+    { label: 'Link Clicks', value: 0, icon: 'ti-link' },
   ]
 
   const isDark = theme === 'dark'
@@ -270,9 +271,11 @@ export default function DashboardPage() {
       border: 0.5px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(10,10,20,0.1)'};
       border-radius: 12px; padding: 14px; transition: background 0.3s, border-color 0.3s;
     }
+    .metric-card-content { display: flex; align-items: flex-start; gap: 10px; }
+    .metric-card-icon { flex: 0 0 auto; margin-top: 2px; font-size: 17px; color: ${isDark ? 'rgba(255,255,255,0.42)' : 'rgba(10,10,20,0.38)'}; }
+    .metric-card-copy { min-width: 0; }
     .m-label { font-size: 11px; color: ${isDark ? 'rgba(255,255,255,0.4)' : 'rgba(10,10,20,0.45)'}; margin-bottom: 4px; }
     .m-val { font-size: 22px; font-weight: 700; }
-    .m-sub { font-size: 10px; color: ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(10,10,20,0.35)'}; margin-top: 3px; }
 
     /* CHART CARD */
     .chart-card {
@@ -282,7 +285,8 @@ export default function DashboardPage() {
     }
 
     /* TOP KONTEN */
-    .section-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+    .section-title { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+    .section-title i { font-size: 15px; color: ${isDark ? 'rgba(255,255,255,0.42)' : 'rgba(10,10,20,0.38)'}; }
     .thumb-card {
       background: ${isDark ? 'rgba(255,255,255,0.03)' : 'rgba(10,10,20,0.02)'};
       border: 0.5px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(10,10,20,0.1)'};
@@ -320,7 +324,7 @@ export default function DashboardPage() {
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
       <style>{css}</style>
 
-      <div className="dash-root">
+      <div className="dash-root dashboard-page-root">
 
         {/* NAVBAR */}
         <div style={{ padding: '10px 12px 0', flexShrink: 0 }}>
@@ -336,7 +340,7 @@ export default function DashboardPage() {
               <a href="mailto:freehandtools@gmail.com?subject=Masalah%20Overview%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Overview%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, boxSizing: 'border-box', background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(10,10,20,0.03)', border: `0.5px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.18)'}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: isDark ? '#fff' : '#0a0a14', textDecoration: 'none', cursor: 'pointer' }}>
                 <i className="ti ti-message" style={{ fontSize: 13 }} /> Hubungi Kami
               </a>
-              <button onClick={() => setTheme(isDark ? 'light' : 'dark')} style={{ width: 32, height: 32, boxSizing: 'border-box', borderRadius: 8, border: `0.5px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.18)'}`, background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: isDark ? '#fff' : '#0a0a14', fontSize: 16 }}>
+              <button onClick={toggleTheme} aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'} style={{ width: 32, height: 32, boxSizing: 'border-box', borderRadius: 8, border: `0.5px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.18)'}`, background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: isDark ? '#fff' : '#0a0a14', fontSize: 16 }}>
                 <i className={isDark ? 'ti ti-moon' : 'ti ti-sun'} />
               </button>
             </div>
@@ -344,9 +348,11 @@ export default function DashboardPage() {
         </div>
 
         {/* TOPBAR */}
-        <div className="topbar">
-          <div className="topbar-title">Overview</div>
-          <div className="topbar-right">
+        <DashboardTopbar
+          title="Overview"
+          isDark={isDark}
+          actions={
+            <>
             {([7, 30, 90] as Period[]).map(p => (
               <button
                 key={p}
@@ -362,44 +368,27 @@ export default function DashboardPage() {
               <i className="ti ti-refresh" style={{ fontSize: 13 }} />
               {refreshing ? 'Memperbarui...' : 'Refresh'}
             </button>
-            <div className="avatar-wrap">
-              {account?.profile_picture_url
-                ? <img src={account.profile_picture_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
-                : <svg width="20" height="20" viewBox="0 0 24 24" fill={isDark ? 'white' : '#0a0a14'}><path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.5 0-10.4 1.8-10.4 5.3v1.1h20.8v-1.1c0-3.5-6.9-5.3-10.4-5.3z" /></svg>
-              }
-            </div>
-          </div>
-        </div>
+            <a
+              href={account?.username ? `https://www.instagram.com/${encodeURIComponent(account.username)}/` : undefined}
+              target={account?.username ? '_blank' : undefined}
+              rel={account?.username ? 'noreferrer' : undefined}
+              aria-label={account?.username ? `Buka profil Instagram @${account.username}` : 'Foto profil pengguna'}
+              title={account?.username ? `@${account.username}` : undefined}
+              style={{ display: 'block', borderRadius: '50%', lineHeight: 0, cursor: account?.username ? 'pointer' : 'default' }}
+            >
+              <div className="avatar-wrap">
+                {account?.profile_picture_url
+                  ? <img src={account.profile_picture_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={`Foto profil @${account.username}`} />
+                  : <svg width="20" height="20" viewBox="0 0 24 24" fill={isDark ? 'white' : '#0a0a14'}><path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.5 0-10.4 1.8-10.4 5.3v1.1h20.8v-1.1c0-3.5-6.9-5.3-10.4-5.3z" /></svg>
+                }
+              </div>
+            </a>
+            </>
+          }
+        />
 
         {/* BODY */}
-        <div className="body">
-
-          {/* SIDEBAR */}
-          <div className="sidebar">
-            <Link href="/dashboard" style={{ textDecoration: 'none' }}>
-              <div className="s-icon active" style={{ background: 'linear-gradient(135deg,#FF7A00,#FF0069,#7638FA)' }}>
-                <i className="ti ti-layout-dashboard" />
-              </div>
-            </Link>
-            <Link href="/dashboard/content" style={{ textDecoration: 'none' }}>
-              <div className="s-icon"><i className="ti ti-photo" /></div>
-            </Link>
-            <Link href="/dashboard/stats" style={{ textDecoration: 'none' }}>
-              <div className="s-icon"><i className="ti ti-chart-bar" /></div>
-            </Link>
-            <Link href="/dashboard/audience" style={{ textDecoration: 'none' }}>
-              <div className="s-icon"><i className="ti ti-users" /></div>
-            </Link>
-            <Link href="/dashboard/ai" style={{ textDecoration: 'none' }}>
-              <div className="s-icon"><i className="ti ti-bulb" /></div>
-            </Link>
-            <Link href="/dashboard/settings" style={{ textDecoration: 'none', marginTop: 'auto' }}>
-              <div className="s-icon"><i className="ti ti-settings" /></div>
-            </Link>
-          </div>
-
-          {/* MAIN */}
-          <div className="main">
+        <DashboardBody activePage="overview" isDark={isDark}>
 
             {/* Greeting */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
@@ -434,11 +423,15 @@ export default function DashboardPage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 10 }}>
                 {metrics.slice(0, 4).map((m, i) => (
                   <div key={i} className="metric-card">
-                    <div className="m-label">{m.label}</div>
-                    <div className="m-val">
-                      <span ref={el => { metricsRef.current[i] = el }} data-target={m.value}>0</span>
+                    <div className="metric-card-content">
+                      <i className={`ti ${m.icon} metric-card-icon`} aria-hidden="true" />
+                      <div className="metric-card-copy">
+                        <div className="m-label">{m.label}</div>
+                        <div className="m-val">
+                          <span ref={el => { metricsRef.current[i] = el }} data-target={m.value}>0</span>
+                        </div>
+                      </div>
                     </div>
-                    {m.sub && <div className="m-sub">{m.sub}</div>}
                   </div>
                 ))}
               </div>
@@ -449,11 +442,15 @@ export default function DashboardPage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 16 }}>
                 {metrics.slice(4).map((m, i) => (
                   <div key={i} className="metric-card">
-                    <div className="m-label">{m.label}</div>
-                    <div className="m-val">
-                      <span ref={el => { metricsRef.current[i + 4] = el }} data-target={m.value}>0</span>
+                    <div className="metric-card-content">
+                      <i className={`ti ${m.icon} metric-card-icon`} aria-hidden="true" />
+                      <div className="metric-card-copy">
+                        <div className="m-label">{m.label}</div>
+                        <div className="m-val">
+                          <span ref={el => { metricsRef.current[i + 4] = el }} data-target={m.value}>0</span>
+                        </div>
+                      </div>
                     </div>
-                    {m.sub && <div className="m-sub">{m.sub}</div>}
                   </div>
                 ))}
               </div>
@@ -480,7 +477,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Top konten */}
-            <div className="section-title">Top konten</div>
+            <div className="section-title"><i className="ti ti-trophy" aria-hidden="true" />Top konten</div>
             {loading ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10 }}>
                 {[...Array(3)].map((_, i) => (
@@ -519,17 +516,16 @@ export default function DashboardPage() {
                     </a>
                   )
                 })}
-                <a href="#" className="thumb-card see-all">
+                <Link href="/dashboard/content" className="thumb-card see-all">
                   <div style={{ fontSize: 11, textAlign: 'center', padding: 14 }}>
                     <i className="ti ti-arrow-right" style={{ display: 'block', fontSize: 18, marginBottom: 4 }} />
                     Lihat semua konten
                   </div>
-                </a>
+                </Link>
               </div>
             )}
 
-          </div>
-        </div>
+        </DashboardBody>
       </div>
     </>
   )

@@ -1,25 +1,15 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { useTheme } from './_components/use-theme'
 
 export default function ErrorPage({ error, reset }: { error: Error; reset: () => void }) {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const { theme, toggleTheme } = useTheme()
   const wrapRef = useRef<HTMLDivElement>(null)
   const nebula1Ref = useRef<HTMLDivElement>(null)
   const nebula2Ref = useRef<HTMLDivElement>(null)
   const btnGroupRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
-    if (saved) setTheme(saved)
-  }, [])
-
-  function toggleTheme() {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    localStorage.setItem('theme', next)
-  }
 
   useEffect(() => {
     const wrap = wrapRef.current
@@ -79,7 +69,7 @@ export default function ErrorPage({ error, reset }: { error: Error; reset: () =>
   return (
     <>
     <title>Terjadi Kesalahan — Creator Performance Intelligence Dashboard</title>
-    <div ref={wrapRef} style={{ minHeight: '100vh', background: bg, display: 'flex', flexDirection: 'column', transition: 'background 0.3s', fontFamily: 'system-ui,sans-serif', position: 'relative', overflow: 'hidden' }}>
+    <div className="theme-page-root" ref={wrapRef} style={{ minHeight: '100vh', background: bg, display: 'flex', flexDirection: 'column', transition: 'background 0.3s', fontFamily: 'system-ui,sans-serif', position: 'relative', overflow: 'hidden' }}>
       <style>{`
         @keyframes igShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         @keyframes twinkle { 0%,100%{opacity:0.25} 50%{opacity:1} }
@@ -115,7 +105,7 @@ export default function ErrorPage({ error, reset }: { error: Error; reset: () =>
             <a href="mailto:freehandtools@gmail.com?subject=Masalah%20Error%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Error%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, background: cardBg, border: `0.5px solid ${navBorder}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, textDecoration: 'none', cursor: 'pointer' }}>
               <i className="ti ti-message" style={{ fontSize: 13 }} />Hubungi Kami
             </a>
-            <button onClick={toggleTheme} style={{ width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`, background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
+            <button onClick={toggleTheme} aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'} style={{ width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`, background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
               <i className={`ti ${isDark ? 'ti-moon' : 'ti-sun'}`} />
             </button>
           </div>

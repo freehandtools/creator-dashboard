@@ -1,7 +1,9 @@
 'use client'
 
-import { useEffect, useRef, useState, useMemo } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { useTheme } from './_components/use-theme'
 import { Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
@@ -91,7 +93,7 @@ export default function LandingPage() {
   const mascotMaskRef = useRef<HTMLDivElement>(null) 
   const charPointerRef = useRef({ x: 0, y: 0 })
 
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const { theme, toggleTheme } = useTheme()
   const router = useRouter()
   const R = 160
 
@@ -231,6 +233,7 @@ export default function LandingPage() {
     <>
       <style>{css}</style>
       <div
+        className="theme-page-root"
         ref={wrapRef}
         data-theme={theme}
         onMouseMove={handleMouseMove}
@@ -309,13 +312,13 @@ export default function LandingPage() {
         {/* CONTENT */}
         <div style={{padding:'20px 20px 0',position:'relative',zIndex:10,flexShrink:0}}>
           <nav style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 18px',borderRadius:12,border:`0.5px solid ${borderStrong}`,backdropFilter:'blur(16px)',background:navBg,transition:'all 0.3s'}}>
-            <div style={{display:'flex',alignItems:'center',gap:7}}>
+            <Link href="/" aria-label="Kembali ke halaman utama" style={{display:'flex',alignItems:'center',gap:7,textDecoration:'none'}}>
               <svg width="15" height="15" viewBox="0 0 500 420" fill={textPrimary} style={{transition:'fill 0.3s'}}>
                 <path d="M209.73,104.87c0,11.58-9.39,20.97-20.97,20.97h-62.92v62.92c0,11.58-9.39,20.97-20.97,20.97-11.58,0-20.97-9.39-20.97-20.97v-62.92H20.97C9.39,125.84,0,116.45,0,104.87c0-11.58,9.39-20.97,20.97-20.97h62.92V20.97C83.89,9.39,93.28,0,104.86,0c11.58,0,20.97,9.39,20.97,20.97v62.93h62.92c11.58,0,20.97,9.39,20.97,20.97Z"/>
                 <path d="M440.43,356.53v10.5c0,5.79-4.69,10.48-10.48,10.48-5.79,0-10.48-4.69-10.48-10.48-0-5.79-4.7-10.49-10.49-10.49-5.79,0-10.49,4.7-10.49,10.49v10.49c0,23.17-18.78,41.94-41.94,41.94-23.17,0-41.94-18.78-41.94-41.94v-10.49c0-5.79-4.69-10.49-10.49-10.49-5.79,0-10.49,4.69-10.49,10.49v10.49c0,23.17-18.78,41.94-41.94,41.94-23.17,0-41.94-18.78-41.94-41.94v-31.46c0-5.79-4.69-10.49-10.49-10.49-5.79,0-10.49,4.69-10.49,10.49v41.94c0,28.96-23.48,52.43-52.43,52.43-28.96,0-52.43-23.48-52.43-52.43v-136.32c0-11.58,9.39-20.97,20.97-20.97,11.58,0,20.97,9.39,20.97,20.97v136.32c0,5.79,4.69,10.48,10.48,10.48,5.79,0,10.48-4.69,10.48-10.48v-52.43c0-23.17,18.78-41.94,41.94-41.94,23.17,0,41.94,18.78,41.94,41.94v31.46c0,5.79,4.69,10.49,10.49,10.49,5.79,0,10.49-4.69,10.49-10.49v-10.49c0-23.17,18.78-41.95,41.95-41.95,23.17,0,41.95,18.78,41.95,41.95v10.49c0,5.79,4.69,10.49,10.49,10.49,5.79,0,10.49-4.69,10.49-10.49v-10.49c0-23.17,18.78-41.94,41.94-41.94,23.17,0,41.94,18.78,41.94,41.94Z"/>
               </svg>
               <span style={{fontSize:12,fontWeight:500,color:textPrimary,transition:'color 0.3s'}}>freehandtools</span>
-            </div>
+            </Link>
             <div style={{display:'flex',alignItems:'center',gap:8,height:32}}>
               <a
                 href="mailto:freehandtools@gmail.com?subject=Masalah%20Landing%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Landing%20Page%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F"
@@ -325,7 +328,8 @@ export default function LandingPage() {
                 Hubungi Kami
               </a>
               <button
-                onClick={()=>setTheme(isDark?'light':'dark')}
+                onClick={toggleTheme}
+                aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'}
                 style={{width:32,height:32,boxSizing:'border-box',borderRadius:8,border:`0.5px solid ${borderStrong}`,background:isDark?'rgba(255,255,255,0.1)':'rgba(10,10,20,0.06)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:textPrimary,fontSize:16,transition:'all 0.2s'}}
               >
                 <i className={isDark?'ti ti-moon':'ti ti-sun'}/>

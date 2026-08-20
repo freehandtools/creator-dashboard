@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { DashboardBody, DashboardTopbar, useDashboardTheme } from '../_components/dashboard-chrome'
 
 interface InsightItem {
   judul: string
@@ -19,7 +19,7 @@ export default function AIInsightsPage() {
   const [data, setData] = useState<InsightsData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const { theme, toggleTheme } = useDashboardTheme()
 
   async function generate() {
     setLoading(true)
@@ -46,14 +46,11 @@ export default function AIInsightsPage() {
   const cardBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(10,10,20,0.03)'
   const navBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.6)'
   const borderStrong = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.18)'
-  const topbarBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(10,10,20,0.08)'
-  const sidebarBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(10,10,20,0.08)'
-  const sideIconColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(10,10,20,0.35)'
 
   return (
     <>
     <title>AI Insights — Creator Performance Intelligence Dashboard</title>
-    <div style={{ height: '100vh', background: bg, transition: 'background 0.3s', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div className="dashboard-page-root" style={{ background: bg, transition: 'background 0.3s', display: 'flex', flexDirection: 'column' }}>
 
       {/* NAVBAR */}
       <div style={{ padding: '10px 12px 0', flexShrink: 0, background: bg, zIndex: 20 }}>
@@ -69,7 +66,7 @@ export default function AIInsightsPage() {
             <a href="mailto:freehandtools@gmail.com?subject=Masalah%20AI%20Insights%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20AI%20Insights%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, boxSizing: 'border-box', background: cardBg, border: `0.5px solid ${borderStrong}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, textDecoration: 'none', cursor: 'pointer' }}>
               <i className="ti ti-message" style={{ fontSize: 13 }}></i> Hubungi Kami
             </a>
-            <button onClick={() => setTheme(isDark ? 'light' : 'dark')} style={{ width: 32, height: 32, boxSizing: 'border-box', borderRadius: 8, border: `0.5px solid ${borderStrong}`, background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
+            <button onClick={toggleTheme} aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'} style={{ width: 32, height: 32, boxSizing: 'border-box', borderRadius: 8, border: `0.5px solid ${borderStrong}`, background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
               <i className={isDark ? 'ti ti-moon' : 'ti ti-sun'}></i>
             </button>
           </div>
@@ -77,12 +74,13 @@ export default function AIInsightsPage() {
       </div>
 
       {/* APP SHELL */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '10px 12px 12px', minHeight: 0 }}>
-        <div style={{ flex: 1, borderRadius: 14, border: `0.5px solid ${border}`, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
 
           {/* TOPBAR */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', borderBottom: `0.5px solid ${topbarBorder}`, flexShrink: 0, background: bg, borderRadius: '14px 14px 0 0' }}>
-            <div style={{ fontSize: 18, fontWeight: 900, color: textPrimary }}>AI Insights</div>
+          <DashboardTopbar
+            title="AI Insights"
+            isDark={isDark}
+            actions={
             <button
               onClick={generate}
               disabled={loading}
@@ -91,47 +89,11 @@ export default function AIInsightsPage() {
               <i className="ti ti-refresh" style={{ fontSize: 13 }}></i>
               {loading ? 'Generating...' : 'Generate ulang'}
             </button>
-          </div>
+            }
+          />
 
           {/* BODY */}
-          <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
-
-            {/* SIDEBAR */}
-            <div style={{ width: 60, borderRight: `0.5px solid ${sidebarBorder}`, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '14px 0', gap: 6, flexShrink: 0 }}>
-              <Link href="/dashboard" style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sideIconColor }}>
-                  <i className="ti ti-layout-dashboard" />
-                </div>
-              </Link>
-              <Link href="/dashboard/content" style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sideIconColor }}>
-                  <i className="ti ti-photo" />
-                </div>
-              </Link>
-              <Link href="/dashboard/stats" style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sideIconColor }}>
-                  <i className="ti ti-chart-bar" />
-                </div>
-              </Link>
-              <Link href="/dashboard/audience" style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sideIconColor }}>
-                  <i className="ti ti-users" />
-                </div>
-              </Link>
-              <Link href="/dashboard/ai" style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: '#fff', background: 'linear-gradient(135deg,#FF7A00,#FF0069,#7638FA)' }}>
-                  <i className="ti ti-bulb" />
-                </div>
-              </Link>
-              <Link href="/dashboard/settings" style={{ textDecoration: 'none', marginTop: 'auto' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sideIconColor }}>
-                  <i className="ti ti-settings" />
-                </div>
-              </Link>
-            </div>
-
-            {/* MAIN SCROLL */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: 18 }}>
+          <DashboardBody activePage="ai" isDark={isDark}>
 
               {loading && (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 300, gap: 14 }}>
@@ -204,9 +166,7 @@ export default function AIInsightsPage() {
                   </div>
                 </>
               )}
-            </div>
-          </div>
-        </div>
+          </DashboardBody>
       </div>
     </div>
     </>

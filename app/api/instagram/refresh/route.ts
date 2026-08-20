@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { decryptAccessToken } from '@/lib/token-crypto'
 
 const BASE = 'https://graph.facebook.com/v20.0'
 
@@ -20,10 +21,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Akun tidak ditemukan' }, { status: 404 })
     }
 
-    const { ig_user_id, access_token, id: igAccountId } = account
+    const { ig_user_id, access_token: storedAccessToken, id: igAccountId } = account
+    const accessToken = decryptAccessToken(storedAccessToken)
 
     const profileRes = await fetch(
-      `${BASE}/${ig_user_id}?fields=id,username,name,followers_count,media_count,profile_picture_url&access_token=${access_token}`
+      `${BASE}/${ig_user_id}?fields=id,username,name,followers_count,media_count,profile_picture_url&access_token=${accessToken}`
     )
     const profile = await profileRes.json()
     if (profile.error) throw new Error(`Profile: ${profile.error.message}`)
@@ -41,7 +43,7 @@ export async function GET(req: NextRequest) {
       .eq('id', igAccountId)
 
     const mediaRes = await fetch(
-      `${BASE}/${ig_user_id}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count&limit=50&access_token=${access_token}`
+      `${BASE}/${ig_user_id}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count&limit=50&access_token=${accessToken}`
     )
     const mediaData = await mediaRes.json()
     if (mediaData.error) throw new Error(`Media: ${mediaData.error.message}`)
@@ -78,7 +80,7 @@ export async function GET(req: NextRequest) {
 
       try {
         const insRes = await fetch(
-          `${BASE}/${item.id}/insights?metric=${insightMetrics}&access_token=${access_token}`
+          `${BASE}/${item.id}/insights?metric=${insightMetrics}&access_token=${accessToken}`
         )
         const insData = await insRes.json()
         if (!insData.error && insData.data) {

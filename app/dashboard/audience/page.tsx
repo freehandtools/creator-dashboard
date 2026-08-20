@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback, useRef } from 'react'
-import Link from 'next/link'
+import { DashboardBody, DashboardTopbar, useDashboardTheme } from '../_components/dashboard-chrome'
 
 type DashboardData = {
   account: { followers_count: number | null; username: string | null } | null
@@ -47,7 +47,7 @@ function animateDonut(el: SVGCircleElement, targetPct: number, duration = 1200) 
 }
 
 export default function AudiencePage() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const { theme, toggleTheme } = useDashboardTheme()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -55,17 +55,6 @@ export default function AudiencePage() {
   const barRefs = useRef<(HTMLDivElement | null)[]>([])
   const animated = useRef(false)
   const donutRef = useRef<SVGCircleElement | null>(null)
-
-  useEffect(() => {
-    const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
-    if (saved) setTheme(saved)
-  }, [])
-
-  function toggleTheme() {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    localStorage.setItem('theme', next)
-  }
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -108,15 +97,12 @@ export default function AudiencePage() {
   const bg = isDark ? '#08080f' : '#f7f7fa'
   const navBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)'
   const navBorder = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(10,10,20,0.15)'
-  const topbarBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(10,10,20,0.07)'
   const textPrimary = isDark ? '#fff' : '#0a0a14'
   const textSecondary = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(10,10,20,0.5)'
   const textTertiary = isDark ? 'rgba(255,255,255,0.32)' : 'rgba(10,10,20,0.35)'
   const cardBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(10,10,20,0.03)'
   const cardBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(10,10,20,0.08)'
-  const sidebarBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(10,10,20,0.07)'
   const toggleBg = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)'
-  const sIconColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(10,10,20,0.4)'
   const barBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(10,10,20,0.06)'
   const noticeColor = isDark ? 'rgba(255,255,255,0.3)' : 'rgba(10,10,20,0.3)'
 
@@ -127,14 +113,6 @@ export default function AudiencePage() {
     ? Math.min(Math.round((followers / (totalReach + followers)) * 100), 100)
     : null
   const nonFollowerReach = followerReach !== null ? 100 - followerReach : null
-
-  const SIDEBAR_ITEMS = [
-    { icon: 'ti-layout-dashboard', href: '/dashboard' },
-    { icon: 'ti-photo', href: '/dashboard/content' },
-    { icon: 'ti-chart-bar', href: '/dashboard/stats' },
-    { icon: 'ti-users', href: '/dashboard/audience', active: true },
-    { icon: 'ti-bulb', href: '/dashboard/ai' },
-  ]
 
   // Semua bars didefinisikan di sini agar index ref konsisten
   const BAR_DEFS = [
@@ -179,10 +157,13 @@ export default function AudiencePage() {
     )
   }
 
-  function Card({ children, title }: { children: React.ReactNode; title: string }) {
+  function Card({ children, title, icon }: { children: React.ReactNode; title: string; icon: string }) {
     return (
       <div style={{ background: cardBg, border: `0.5px solid ${cardBorder}`, borderRadius: 12, padding: 14 }}>
-        <div style={{ fontSize: 11, color: textTertiary, marginBottom: 10 }}>{title}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 11, color: textTertiary, marginBottom: 10 }}>
+          <i className={`ti ${icon}`} aria-hidden="true" style={{ flexShrink: 0, fontSize: 15, color: isDark ? 'rgba(255,255,255,0.42)' : 'rgba(10,10,20,0.38)' }} />
+          {title}
+        </div>
         {children}
       </div>
     )
@@ -191,7 +172,7 @@ export default function AudiencePage() {
   return (
     <>
     <title>Audiens — Creator Performance Intelligence Dashboard</title>
-    <div style={{ height: '100vh', overflow: 'hidden', background: bg, display: 'flex', flexDirection: 'column', transition: 'background 0.3s', fontFamily: 'system-ui,sans-serif' }}>
+    <div className="dashboard-page-root" style={{ background: bg, display: 'flex', flexDirection: 'column', transition: 'background 0.3s', fontFamily: 'system-ui,sans-serif' }}>
       <style>{`@keyframes shimmer { 0%{opacity:0.4} 50%{opacity:0.8} 100%{opacity:0.4} }`}</style>
 
       {/* NAVBAR */}
@@ -205,7 +186,7 @@ export default function AudiencePage() {
             <a href="mailto:freehandtools@gmail.com?subject=Masalah%20Audiens%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Audiens%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, background: cardBg, border: `0.5px solid ${navBorder}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, textDecoration: 'none', cursor: 'pointer' }}>
               <i className="ti ti-message" style={{ fontSize: 13 }} />Hubungi Kami
             </a>
-            <button onClick={toggleTheme} style={{ width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`, background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
+            <button onClick={toggleTheme} aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'} style={{ width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`, background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
               <i className={`ti ${isDark ? 'ti-moon' : 'ti-sun'}`} />
             </button>
           </div>
@@ -215,30 +196,10 @@ export default function AudiencePage() {
       {/* APP SHELL */}
       <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
         {/* TOPBAR */}
-        <div style={{ display: 'flex', alignItems: 'center', padding: '12px 18px', borderBottom: `0.5px solid ${topbarBorder}`, flexShrink: 0 }}>
-          <span style={{ fontSize: 18, fontWeight: 900, color: textPrimary }}>Audiens</span>
-        </div>
+        <DashboardTopbar title="Audiens" isDark={isDark} />
 
         {/* BODY */}
-        <div style={{ flex: 1, minHeight: 0, display: 'flex' }}>
-          {/* SIDEBAR */}
-          <div style={{ width: 60, borderRight: `0.5px solid ${sidebarBorder}`, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '14px 0', gap: 6, flexShrink: 0 }}>
-            {SIDEBAR_ITEMS.map((item, i) => (
-              <Link key={i} href={item.href} style={{ textDecoration: 'none' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: item.active ? '#fff' : sIconColor, background: item.active ? 'linear-gradient(135deg,#FF7A00,#FF0069,#7638FA)' : 'transparent', cursor: 'pointer' }}>
-                  <i className={`ti ${item.icon}`} />
-                </div>
-              </Link>
-            ))}
-            <Link href="/dashboard/settings" style={{ textDecoration: 'none', marginTop: 'auto' }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: sIconColor }}>
-                <i className="ti ti-settings" />
-              </div>
-            </Link>
-          </div>
-
-          {/* MAIN SCROLL */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: 18 }}>
+        <DashboardBody activePage="audience" isDark={isDark}>
             {loading ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {[100, 140, 140, 100].map((h, i) => (
@@ -257,7 +218,7 @@ export default function AudiencePage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 10 }}>
                   {/* Followers vs Non-followers */}
-                  <Card title="Followers vs Non-followers">
+                  <Card title="Followers vs Non-followers" icon="ti-users-group">
                     {followerReach !== null ? (
                       <>
                         <svg width="80" height="80" viewBox="0 0 36 36" style={{ display: 'block', margin: '0 auto 8px' }}>
@@ -288,7 +249,7 @@ export default function AudiencePage() {
                   </Card>
 
                   {/* Gender */}
-                  <Card title="Gender">
+                  <Card title="Gender" icon="ti-gender-bigender">
                     {needsMore && <NoticeBox text="Tersedia jika followers ≥ 100" />}
                     <BarRow bar={BAR_DEFS[0]} refIndex={0} />
                     <BarRow bar={BAR_DEFS[1]} refIndex={1} />
@@ -296,7 +257,7 @@ export default function AudiencePage() {
                   </Card>
 
                   {/* Usia */}
-                  <Card title="Rentang Usia">
+                  <Card title="Rentang Usia" icon="ti-calendar-user">
                     {needsMore && <NoticeBox text="Tersedia jika followers ≥ 100" />}
                     <BarRow bar={BAR_DEFS[2]} refIndex={2} />
                     <BarRow bar={BAR_DEFS[3]} refIndex={3} />
@@ -309,7 +270,7 @@ export default function AudiencePage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   {/* Waktu terbaik */}
-                  <Card title="Waktu terbaik untuk posting">
+                  <Card title="Waktu terbaik untuk posting" icon="ti-clock">
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 4, marginBottom: 8 }}>
                       {['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'].map(d => (
                         <div key={d} style={{ fontSize: 9, color: textTertiary, textAlign: 'center' }}>{d}</div>
@@ -323,7 +284,7 @@ export default function AudiencePage() {
                   </Card>
 
                   {/* Lokasi */}
-                  <Card title="Lokasi top audiens">
+                  <Card title="Lokasi top audiens" icon="ti-map-pin">
                     {needsMore && <NoticeBox text="Tersedia jika followers ≥ 100" />}
                     <BarRow bar={BAR_DEFS[7]} refIndex={7} />
                     <BarRow bar={BAR_DEFS[8]} refIndex={8} />
@@ -338,8 +299,7 @@ export default function AudiencePage() {
                 </div>
               </>
             )}
-          </div>
-        </div>
+        </DashboardBody>
       </div>
     </div>
     </>

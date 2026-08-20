@@ -1,9 +1,29 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
+import { useTheme } from '../_components/use-theme'
+
+type ConnectResponse = {
+  success?: boolean
+  redirect?: string
+  error?: string
+}
+
+const GRAPH_API_EXPLORER =
+  'https://developers.facebook.com/tools/explorer/?app_id=1426999336130882'
+
+const TESTER_REQUEST_EMAIL =
+  'mailto:freehandtools@gmail.com?subject=Permintaan%20Akses%20Tester%20Meta%20App%20%E2%80%94%20freehandtools-dashboard.vercel.app&body=Halo%2C%20Kak.%0A%0ASaya%20ingin%20ditambahkan%20sebagai%20Tester%20Meta%20App%20freehandtools.%0AEmail%20akun%20Facebook%2FMeta%20yang%20akan%20saya%20gunakan%3A%20%0A%0ATerima%20kasih.'
+
+const META_DEVELOPER_REQUESTS =
+  'https://developers.facebook.com/settings/developer/requests/'
 
 export default function AuthPage() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const { theme, toggleTheme } = useTheme()
+  const [accessToken, setAccessToken] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const fbBtnRef = useRef<HTMLButtonElement>(null)
   const fbShineRef = useRef<HTMLDivElement>(null)
@@ -23,7 +43,7 @@ export default function AuthPage() {
       star.style.cssText = `position:absolute;border-radius:50%;background:${isDark ? '#fff' : '#888'};width:${size}px;height:${size}px;left:${Math.random() * 100}%;top:${Math.random() * 100}%;animation:twinkle ${(Math.random() * 3 + 2).toFixed(1)}s ease-in-out infinite;animation-delay:${(Math.random() * 3).toFixed(1)}s;${size > 2 ? `box-shadow:0 0 4px ${isDark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.15)'}` : ''}`
       sf.appendChild(star)
     }
-  }, [theme])
+  }, [isDark])
 
   function handleMouseMove(e: React.MouseEvent) {
     const wrap = wrapRef.current
@@ -67,8 +87,39 @@ export default function AuthPage() {
     if (fbShineRef.current) fbShineRef.current.style.opacity = '0'
   }
 
-  function handleConnect() {
-    window.location.href = '/api/auth/meta/start'
+  async function handleConnect(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const token = accessToken.trim()
+    if (!token) {
+      setError('Paste access token dari Graph API Explorer terlebih dahulu.')
+      return
+    }
+
+    setError(null)
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch('/api/auth/token/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: token }),
+      })
+      const data = await response.json().catch(() => ({})) as ConnectResponse
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || `Koneksi gagal dengan HTTP ${response.status}.`)
+      }
+
+      window.location.assign(data.redirect || '/loading-data')
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : 'Koneksi gagal. Silakan coba lagi.',
+      )
+      setIsSubmitting(false)
+    }
   }
 
   const bg = isDark ? '#08080f' : '#f7f7fa'
@@ -89,6 +140,44 @@ export default function AuthPage() {
   const iconBorder = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(10,10,20,0.15)'
   const iconBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(10,10,20,0.03)'
 
+  const steps = [
+    <>
+      <a href={GRAPH_API_EXPLORER} target="_blank" rel="noreferrer" style={{ color: stepText, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+        <i className="ti ti-external-link" style={{ display: 'inline-block', marginRight: 3, fontSize: 11, verticalAlign: '-1px' }} />
+        <span style={{ textDecoration: 'underline' }}>Buka Graph API Explorer</span>
+      </a>
+    </>,
+    <>
+      <span style={{ display: 'block', marginBottom: 5 }}>Pilih permission:</span>
+      <span style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+        {[
+          'instagram_basic',
+          'instagram_manage_insights',
+          'pages_show_list',
+          'pages_read_engagement',
+        ].map((permission) => (
+          <span
+            key={permission}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              border: `0.5px solid ${stepBorder}`,
+              borderRadius: 6,
+              padding: '2px 6px',
+              background: stepBg,
+              fontSize: 9,
+              lineHeight: 1.4,
+            }}
+          >
+            {permission}
+          </span>
+        ))}
+      </span>
+    </>,
+    <>Klik <strong style={{ color: textPrimary }}>Generate Access Token</strong>, login, lalu pilih Page yang terhubung ke Instagram Business/Creator</>,
+    <>Copy token yang muncul, lalu paste ke kolom di bawah</>,
+  ]
+
   return (
     <>
       <title>Hubungkan Instagram — Creator Performance Intelligence Dashboard</title>
@@ -97,9 +186,17 @@ export default function AuthPage() {
         @keyframes twinkle { 0%,100%{opacity:0.25} 50%{opacity:1} }
         #star-field-auth { position:absolute;width:200%;height:200%;top:-50%;left:-50%;animation:starRotate 240s linear infinite;pointer-events:none;z-index:8; }
         .nebula-auth { position:absolute;bottom:-15%;left:50%;transform:translateX(-50%);width:140%;height:50%;filter:blur(65px);pointer-events:none;transition:opacity 0.25s ease,transform 0.4s ease;opacity:0; }
+        .auth-body-scroll { box-sizing:border-box;padding:32px 24px; }
+        .auth-token-input::placeholder { opacity:1;transition:color 0.3s; }
+        .auth-token-input-dark::placeholder { color:rgba(255,255,255,0.55); }
+        .auth-token-input-light::placeholder { color:rgba(10,10,20,0.6); }
+        @media (min-width:768px) {
+          .auth-body-scroll { padding:56px 24px 40px; }
+        }
       `}</style>
 
       <div
+        className="theme-page-root"
         ref={wrapRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
@@ -120,18 +217,18 @@ export default function AuthPage() {
         {/* NAVBAR */}
         <div style={{ padding: '10px 12px 0', position: 'relative', zIndex: 10, flexShrink: 0 }}>
           <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 18px', borderRadius: 12, border: `0.5px solid ${borderStrong}`, backdropFilter: 'blur(16px)', background: navBg, transition: 'all 0.3s' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            <Link href="/" aria-label="Kembali ke halaman utama" style={{ display: 'flex', alignItems: 'center', gap: 7, textDecoration: 'none' }}>
               <svg width="15" height="15" viewBox="0 0 500 420" fill={textPrimary} style={{ transition: 'fill 0.3s' }}>
                 <path d="M209.73,104.87c0,11.58-9.39,20.97-20.97,20.97h-62.92v62.92c0,11.58-9.39,20.97-20.97,20.97-11.58,0-20.97-9.39-20.97-20.97v-62.92H20.97C9.39,125.84,0,116.45,0,104.87c0-11.58,9.39-20.97,20.97-20.97h62.92V20.97C83.89,9.39,93.28,0,104.86,0c11.58,0,20.97,9.39,20.97,20.97v62.93h62.92c11.58,0,20.97,9.39,20.97,20.97Z"/>
                 <path d="M440.43,356.53v10.5c0,5.79-4.69,10.48-10.48,10.48-5.79,0-10.48-4.69-10.48-10.48-0-5.79-4.7-10.49-10.49-10.49-5.79,0-10.49,4.7-10.49,10.49v10.49c0,23.17-18.78,41.94-41.94,41.94-23.17,0-41.94-18.78-41.94-41.94v-10.49c0-5.79-4.69-10.49-10.49-10.49-5.79,0-10.49,4.69-10.49,10.49v10.49c0,23.17-18.78,41.94-41.94,41.94-23.17,0-41.94-18.78-41.94-41.94v-31.46c0-5.79-4.69-10.49-10.49-10.49-5.79,0-10.49,4.69-10.49,10.49v41.94c0,28.96-23.48,52.43-52.43,52.43-28.96,0-52.43-23.48-52.43-52.43v-136.32c0-11.58,9.39-20.97,20.97-20.97,11.58,0,20.97,9.39,20.97,20.97v136.32c0,5.79,4.69,10.48,10.48,10.48,5.79,0,10.48-4.69,10.48-10.48v-52.43c0-23.17,18.78-41.94,41.94-41.94,23.17,0,41.94,18.78,41.94,41.94v31.46c0,5.79,4.69,10.49,10.49,10.49,5.79,0,10.49-4.69,10.49-10.49v-10.49c0-23.17,18.78-41.95,41.95-41.95,23.17,0,41.95,18.78,41.95,41.95v10.49c0,5.79,4.69,10.49,10.49,10.49,5.79,0,10.49-4.69,10.49-10.49v-10.49c0-23.17,18.78-41.94,41.94-41.94,23.17,0,41.94,18.78,41.94,41.94Z"/>
               </svg>
               <span style={{ fontSize: 12, fontWeight: 500, color: textPrimary, transition: 'color 0.3s' }}>freehandtools</span>
-            </div>
+            </Link>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, height: 32 }}>
               <a href="mailto:freehandtools@gmail.com?subject=Masalah%20Auth%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20Auth%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, boxSizing: 'border-box', background: cardBg, border: `0.5px solid ${borderStrong}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, cursor: 'pointer', textDecoration: 'none', transition: 'all 0.3s' }}>
                 <i className="ti ti-message" style={{ fontSize: 13 }} /> Hubungi Kami
               </a>
-              <button onClick={() => setTheme(isDark ? 'light' : 'dark')} style={{ width: 32, height: 32, boxSizing: 'border-box', borderRadius: 8, border: `0.5px solid ${borderStrong}`, background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16, transition: 'all 0.2s' }}>
+              <button onClick={toggleTheme} aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'} style={{ width: 32, height: 32, boxSizing: 'border-box', borderRadius: 8, border: `0.5px solid ${borderStrong}`, background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16, transition: 'all 0.2s' }}>
                 <i className={isDark ? 'ti ti-moon' : 'ti ti-sun'} />
               </button>
             </div>
@@ -139,8 +236,8 @@ export default function AuthPage() {
         </div>
 
         {/* BODY */}
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', position: 'relative', zIndex: 5 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: 340, width: '100%' }}>
+        <div className="auth-body-scroll" style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', position: 'relative', zIndex: 5, overflowY: 'auto' }}>
+          <form onSubmit={handleConnect} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: 340, width: '100%', margin: 'auto 0', flexShrink: 0 }}>
 
             {/* Icon */}
             <div style={{ width: 56, height: 56, borderRadius: 16, border: `2px solid ${iconBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18, background: iconBg, transition: 'all 0.3s' }}>
@@ -150,52 +247,96 @@ export default function AuthPage() {
             </div>
 
             <h1 style={{ fontSize: 22, fontWeight: 900, color: textPrimary, margin: '0 0 8px', letterSpacing: '-0.3px', transition: 'color 0.3s' }}>Hubungkan Instagram</h1>
+
+            {/* Step 0 — prasyarat akses beta tertutup. */}
+            <div style={{ width: '100%', boxSizing: 'border-box', border: `0.5px solid ${stepBorder}`, borderRadius: 12, padding: '14px 18px', background: stepBg, backdropFilter: 'blur(8px)', marginBottom: 14, transition: 'all 0.3s' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                <div style={{ width: 22, height: 22, border: `1.5px solid ${stepDotBorder}`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 600, color: stepDotColor, background: 'transparent', flexShrink: 0, transition: 'all 0.3s' }}>
+                  0
+                </div>
+                <div style={{ color: stepText, textAlign: 'left', fontSize: 11, lineHeight: 1.5, paddingTop: 1, transition: 'color 0.3s' }}>
+                  <strong style={{ display: 'block', color: textPrimary, fontSize: 12, marginBottom: 3 }}>Aktifkan akses Tester</strong>
+                  <a href={TESTER_REQUEST_EMAIL} style={{ color: stepText, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+                    <i className="ti ti-external-link" style={{ display: 'inline-block', marginRight: 3, fontSize: 11, verticalAlign: '-1px' }} />
+                    <span style={{ textDecoration: 'underline' }}>Hubungi kami</span>
+                  </a>
+                  {' '}menggunakan email akun Facebook/Meta yang akan dipakai. Setelah kami mengirim undangan, buka{' '}
+                  <a href={META_DEVELOPER_REQUESTS} target="_blank" rel="noreferrer" style={{ color: stepText, textDecoration: 'none' }}>
+                    <span style={{ whiteSpace: 'nowrap' }}>
+                      <i className="ti ti-external-link" style={{ display: 'inline-block', marginRight: 3, fontSize: 11, verticalAlign: '-1px' }} />
+                      <span style={{ textDecoration: 'underline' }}>Requests</span>
+                    </span>
+                    <span style={{ textDecoration: 'underline' }}> Meta for Developers</span>
+                  </a>
+                  {' '}dan terima undangannya sebelum membuat token.
+                </div>
+              </div>
+            </div>
+
             <p style={{ fontSize: 13, color: textSecondary, lineHeight: 1.6, margin: '0 0 24px', transition: 'color 0.3s' }}>
-              Kamu akan diarahkan ke Facebook untuk memberi izin baca insight. Kami tidak menyimpan password Instagram kamu.
+              Generate access token lewat Meta, lalu paste di sini. Kami tidak menyimpan password Instagram kamu.
             </p>
 
-            {/* Steps */}
+            {/* Steps — layout lama dipertahankan, hanya isi flow yang diganti. */}
             <div style={{ width: '100%', border: `0.5px solid ${stepBorder}`, borderRadius: 12, padding: '18px 18px 6px', background: stepBg, backdropFilter: 'blur(8px)', marginBottom: 22, transition: 'all 0.3s' }}>
-              {[
-                { done: true, label: 'Login ke akun Facebook' },
-                { done: false, label: 'Pilih Facebook Page yang terhubung ke Instagram', num: '2' },
-                { done: false, label: 'Pilih akun Instagram', num: '3' },
-                { done: false, label: 'Setujui izin baca insight (hanya baca)', num: '4', last: true },
-              ].map((s, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: s.last ? 18 : 12 }}>
-                  <div style={{ width: 22, height: 22, border: s.done ? 'none' : `1.5px solid ${stepDotBorder}`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 600, color: s.done ? '#08080f' : stepDotColor, background: s.done ? '#4ade80' : 'transparent', flexShrink: 0, transition: 'all 0.3s' }}>
-                    {s.done ? <i className="ti ti-check" /> : s.num}
+              {steps.map((label, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: i === steps.length - 1 ? 18 : 12 }}>
+                  <div style={{ width: 22, height: 22, border: `1.5px solid ${stepDotBorder}`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 600, color: stepDotColor, background: 'transparent', flexShrink: 0, transition: 'all 0.3s' }}>
+                    {i + 1}
                   </div>
-                  <div style={{ fontSize: 12, color: stepText, textAlign: 'left', lineHeight: 1.5, paddingTop: 2, transition: 'color 0.3s' }}>{s.label}</div>
+                  <div style={{ fontSize: 12, color: stepText, textAlign: 'left', lineHeight: 1.5, paddingTop: 2, transition: 'color 0.3s' }}>{label}</div>
                 </div>
               ))}
             </div>
 
-            {/* FB Button */}
+            <label htmlFor="access-token" style={{ alignSelf: 'flex-start', fontSize: 11, color: stepText, marginBottom: 5 }}>
+              Access token
+            </label>
+            <textarea
+              id="access-token"
+              className={`auth-token-input ${isDark ? 'auth-token-input-dark' : 'auth-token-input-light'}`}
+              value={accessToken}
+              onChange={(event) => {
+                setAccessToken(event.target.value)
+                if (error) setError(null)
+              }}
+              disabled={isSubmitting}
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="Paste access token dari Graph API Explorer"
+              rows={3}
+              style={{ width: '100%', minHeight: 62, maxHeight: 96, resize: 'vertical', boxSizing: 'border-box', border: `0.5px solid ${stepBorder}`, borderRadius: 10, padding: '10px 12px', background: stepBg, color: textPrimary, fontSize: 11, lineHeight: 1.45, outline: 'none', marginBottom: error ? 7 : 12 }}
+            />
+
+            {error && (
+              <div role="alert" style={{ width: '100%', boxSizing: 'border-box', border: '0.5px solid rgba(248,113,113,0.45)', borderRadius: 9, padding: '8px 10px', marginBottom: 9, background: 'rgba(127,29,29,0.22)', color: isDark ? '#fecaca' : '#991b1b', fontSize: 10, lineHeight: 1.45, textAlign: 'left' }}>
+                {error}
+              </div>
+            )}
+
+            {/* Bentuk, warna, dan efek tombol lama dipertahankan. */}
             <button
               ref={fbBtnRef}
-              onClick={handleConnect}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: '#0866ff', border: 'none', borderRadius: 22, padding: '11px 26px', fontSize: 13, fontWeight: 600, color: '#fff', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}
+              type="submit"
+              disabled={isSubmitting}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: '#0866ff', border: 'none', borderRadius: 22, padding: '11px 26px', fontSize: 13, fontWeight: 600, color: '#fff', cursor: isSubmitting ? 'wait' : 'pointer', position: 'relative', overflow: 'hidden', opacity: isSubmitting ? 0.72 : 1 }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-              </svg>
-              Lanjutkan ke Facebook
+              <i className={isSubmitting ? 'ti ti-loader-2' : 'ti ti-link'} style={{ fontSize: 16 }} />
+              {isSubmitting ? 'Menghubungkan...' : 'Hubungkan'}
               <div ref={fbShineRef} style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at var(--bx,50%) var(--by,50%),rgba(255,255,255,0.3),transparent 60%)', opacity: 0, transition: 'opacity 0.2s', pointerEvents: 'none', borderRadius: 22 }} />
             </button>
 
-            <p style={{ fontSize: 10, color: textTertiary, marginTop: 12, transition: 'color 0.3s' }}>Hanya akun Business / Creator yang didukung</p>
-            <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.25)', marginTop: '8px', textAlign: 'center', maxWidth: '280px', lineHeight: 1.6, }}>
-              Dengan melanjutkan, kamu menyetujui{' '}
-              <a href="/terms" target="_blank" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'underline' }}>
+            <p style={{ fontSize: '10px', color: textTertiary, marginTop: '12px', textAlign: 'center', maxWidth: '280px', lineHeight: 1.6 }}>
+              Dengan menghubungkan akun, kamu menyetujui{' '}
+              <a href="/terms" target="_blank" style={{ color: textSecondary, textDecoration: 'underline', whiteSpace: 'nowrap' }}>
                 Syarat Layanan
               </a>
               {' '}dan{' '}
-              <a href="/privacy" target="_blank" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'underline' }}>
+              <a href="/privacy" target="_blank" style={{ color: textSecondary, textDecoration: 'underline', whiteSpace: 'nowrap' }}>
                 Kebijakan Privasi
               </a>
             </p>
-          </div>
+          </form>
         </div>
       </div>
     </>

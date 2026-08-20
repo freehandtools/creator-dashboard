@@ -99,7 +99,10 @@ export async function POST(req: NextRequest) {
 
     // Meta butuh response dengan confirmation_code dan status_url
     const confirmationCode = crypto.randomBytes(16).toString('hex')
-    const statusUrl = `${process.env.META_REDIRECT_URI?.replace('/api/auth/meta/callback', '')}/api/auth/meta/delete/status?code=${confirmationCode}`
+    const statusUrl = new URL(
+      `/api/auth/meta/delete/status?code=${encodeURIComponent(confirmationCode)}`,
+      req.url,
+    ).toString()
 
     return NextResponse.json({
       url: statusUrl,
