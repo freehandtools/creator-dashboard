@@ -4,6 +4,7 @@ import { useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useTheme } from './_components/use-theme'
+import { NavbarSupportActions } from './_components/navbar-support-actions'
 import { Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
@@ -267,10 +268,10 @@ export default function LandingPage() {
             pointerEvents: 'none', 
           }}
         >
-        {/* Canvas 1: Default */}
+          {/* Canvas 1: Default */}
           <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
             <Canvas 
-              eventSource={typeof window !== 'undefined' ? document.body : undefined} 
+              eventSource={wrapRef as React.RefObject<HTMLElement>}
               camera={{ position: [0, 0, 4.0], fov: 45 }} 
               gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
             >
@@ -296,7 +297,7 @@ export default function LandingPage() {
             }}
           >
             <Canvas 
-              eventSource={typeof window !== 'undefined' ? document.body : undefined} 
+              eventSource={wrapRef as React.RefObject<HTMLElement>}
               camera={{ position: [0, 0, 4.0], fov: 45 }} 
               gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
             >
@@ -327,6 +328,7 @@ export default function LandingPage() {
                 <i className="ti ti-message" style={{fontSize:13}}/>
                 Hubungi Kami
               </a>
+              <NavbarSupportActions isDark={isDark} />
               <button
                 onClick={toggleTheme}
                 aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'}

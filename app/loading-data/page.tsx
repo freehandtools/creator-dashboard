@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '../_components/use-theme'
 import Link from 'next/link'
+import { NavbarSupportActions } from '../_components/navbar-support-actions'
 
 type Step = {
   label: string
@@ -132,6 +133,7 @@ export default function LoadingDataPage() {
               <i className="ti ti-message" style={{ fontSize: 13 }} />
               Hubungi Kami
             </a>
+            <NavbarSupportActions isDark={isDark} />
             <button onClick={toggleTheme} aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'} style={{
               width: 32, height: 32, borderRadius: 8, border: `0.5px solid ${navBorder}`,
               background: toggleBg, display: 'flex', alignItems: 'center', justifyContent: 'center',

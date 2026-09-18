@@ -2,6 +2,7 @@
 
 import type React from 'react'
 import { useTheme } from '../_components/use-theme'
+import { NavbarSupportActions } from '../_components/navbar-support-actions'
 
 export default function TermsPage() {
   const { theme, toggleTheme } = useTheme()
@@ -85,6 +86,7 @@ export default function TermsPage() {
                 <i className="ti ti-message" style={{ fontSize: '13px' }} />
                 Hubungi Kami
               </a>
+              <NavbarSupportActions isDark={isDark} />
               <button
                 onClick={toggleTheme}
                 aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'}

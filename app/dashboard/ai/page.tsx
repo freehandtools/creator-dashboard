@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { DashboardBody, DashboardTopbar, useDashboardTheme } from '../_components/dashboard-chrome'
+import { NavbarSupportActions } from '../../_components/navbar-support-actions'
 
 interface InsightItem {
   judul: string
@@ -66,6 +67,7 @@ export default function AIInsightsPage() {
             <a href="mailto:freehandtools@gmail.com?subject=Masalah%20AI%20Insights%20Page%20—%20freehandtools-dashboard.vercel.app&body=Halo%2C%20kak.%20Saat%20ini%2C%20halaman%20AI%20Insights%20yang%20saya%20buka%20ada%20suatu%20masalah.%20Tolong%20perbaiki%20bagian%20yang%20eror%20atau%20bermasalah.%20Terima%20kasih%20%F0%9F%99%8F" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 32, boxSizing: 'border-box', background: cardBg, border: `0.5px solid ${borderStrong}`, borderRadius: 8, padding: '0 14px', fontSize: 11, color: textPrimary, textDecoration: 'none', cursor: 'pointer' }}>
               <i className="ti ti-message" style={{ fontSize: 13 }}></i> Hubungi Kami
             </a>
+            <NavbarSupportActions isDark={isDark} />
             <button onClick={toggleTheme} aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'} style={{ width: 32, height: 32, boxSizing: 'border-box', borderRadius: 8, border: `0.5px solid ${borderStrong}`, background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: textPrimary, fontSize: 16 }}>
               <i className={isDark ? 'ti ti-moon' : 'ti ti-sun'}></i>
             </button>
